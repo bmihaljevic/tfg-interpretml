@@ -1,27 +1,26 @@
 
 
-## 2024-11-12
+## 2024-11-13
 
 
 ### Summary of the Day
-- Total Hours Worked: 3
-- Main Objective: Learn how EBM visualize each feature importance (global and local) and try some YellowBrick functionalities.
+- Total Hours Worked: 1.5
+- Main Objective: Understand how the EBMs explanations graphs are made.
 
 ### Tasks Completed
-1. EBMs on binary classification problem: Use a binary classification problem to understand the interpretability of EBMs and the explanations given.
+1. Bins and scores: Comprehend how are they used for the visualization, specifically in 'explain_global'.
 
-2. EBMs on multiclass classification problem: Use a multiclass classification problem to extend the knowledge of the first task.
-
-3. YellowBrick features: Try some visualization techniques given by YellowBrick with the multiclass classification problem to see how it works. 
+2. Modify scores: Change the scores of a variable to be able to "control" what is being visualized. I visualized random and constant scores.  
 
 ### In-Progress
 None
 
 ### Next Steps for Tomorrow
-- Task 1: Understand in depth how the EBMs visualization/explanation function works.
-- Task 2: Try to modify some internal data of the model to visualize what i want. 
+- Task 1: Analyze the 'explain_global' function. Study this function in detail to understand how it creates explanations and how it uses internal variables.
+- Task 2: Take a look at the 'explain_local' function.
+- 
 
 ### Issues/Blockers
-- Understanding the source code of EBMs: I tried to understand some functions as the 'explain_global' independently, but it was not easy. I'll have to take a general look at the code to understand what each internal variable of the model means.
+- Understanding EBM variables in visualizations: Some internal variables are still unclear regarding their role in the model explanations.
 
 
