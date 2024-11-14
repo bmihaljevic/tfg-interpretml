@@ -1,26 +1,24 @@
 
 
-## 2024-11-13
+## 2024-11-14
 
 
 ### Summary of the Day
 - Total Hours Worked: 1.5
-- Main Objective: Understand how the EBMs explanations graphs are made.
+- Main Objective: Understand how the EBMs local explanations graphs are made.
 
 ### Tasks Completed
-1. Bins and scores: Comprehend how are they used for the visualization, specifically in 'explain_global'.
+1. 'local explain' function read: I tried to understand how the visualization was made by reading the code.
 
-2. Modify scores: Change the scores of a variable to be able to "control" what is being visualized. I visualized random and constant scores.  
+2. Partial understanding of 'local explain': I mostly understood how the function works but still need to clarify some aspects.
 
 ### In-Progress
-None
+Understanding of 'local_explain' function.
 
 ### Next Steps for Tomorrow
-- Task 1: Analyze the 'explain_global' function. Study this function in detail to understand how it creates explanations and how it uses internal variables.
-- Task 2: Take a look at the 'explain_local' function.
-- 
+- Task 1: Analyze the 'explain_local' function to finally understand it.
 
 ### Issues/Blockers
-- Understanding EBM variables in visualizations: Some internal variables are still unclear regarding their role in the model explanations.
+- There are some internal EBM functions with no comments so I don't really understand their goal.
 
 
