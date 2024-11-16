@@ -1,0 +1,270 @@
+- look for any final features/fixes to include before the release:
+  - check internal notes
+  - check github issues
+  - check github pull requests
+  - check existing documentation
+  - look for any warnings in our builds
+
+- run extra tests:
+  - python exact value comparison tests in stash
+  - C++ exact value comparison tests in stash
+  - console tests
+  - compare benchmark to previous known release (v0.6.0 is a validated release)
+
+- IMPORTANT: check that the linux shared library is manylinux:
+  - in azure-pipelines, under the published artifacts, under asm-x64-ubuntu-*, open libebm_linux_x64.s
+  - look for the section "Version References"
+  - if there is anything above GLIBC_2.5 (GLIBC_2.4 is ok), then we probably want to add a wrapper
+
+- update version numbers for R, PyPI, npm(interpret-inline):
+  - R/DESCRIPTION (also update the date!)
+  - python/interpret/setup.py
+  - python/interpret-core/setup.py
+  - python/interpret-core/interpret/_version.py
+  - shared/vis/package.json
+- update the CHANGELOG.md file
+
+- download the following into a new directory. From azure-pipelines, in "published artifacts":
+  - docs: download the entire "docs" artifact as a zip file
+  - npm: interpretml-interpret-inline-*.tgz
+  - R: interpret_*.tar.gz
+  - sdist: interpret-*.tar.gz
+  - sdist: interpret-core-*.tar.gz
+  - bdist: interpret-*-py3-none-any.whl
+  - bdist: interpret_core-*-py3-none-any.whl
+
+- check the docs
+  - cd <PACKAGE_DOWNLOAD_DIRECTORY>
+  - unzip the docs.zip file
+  - open one of the html files and go to the first document in the list
+  - do a side by side browser comparison to the existing documentation at: https://interpret.ml/docs
+  - clone the repo: https://github.com/interpretml/docs
+  - delete all the files, except possibly for ".gitignore" (TODO: can we remove .gitignore even since all the files are uploaded?)
+  - copy the new files into that repo
+  - commit changes to the docs repo, BUT DO NOT PUSH YET
+
+- test the bdist:
+  - open anaconda console window
+  - cd <PACKAGE_DOWNLOAD_DIRECTORY>
+  - conda env remove --name interpret_bdist && conda create --yes --name interpret_bdist python=3.10 && conda activate interpret_bdist
+  - pip install jupyter interpret_core-*-py3-none-any.whl[debug,notebook,plotly,lime,sensitivity,shap,linear,treeinterpreter,aplr,dash,skoperules,testing]
+  - cd <REPO_ROOT>
+  - cd docs/interpret/python/examples
+  - jupyter notebook
+  - open all the example notebooks, run them, and check the visualizations
+  - clear all outputs on all notebooks
+  - add the following lines to the top of each notebook:
+from interpret import set_visualize_provider
+from interpret.provider import InlineProvider
+set_visualize_provider(InlineProvider())
+  - re-run all the notebooks and check the visualizations again
+
+- test the sdist:
+  - open anaconda console window
+  - cd <PACKAGE_DOWNLOAD_DIRECTORY>
+  - conda env remove --name interpret_sdist && conda create --yes --name interpret_sdist python=3.10 && conda activate interpret_sdist
+  - IN WINDOWS: get the Visual studio environment with: "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+  - pip install jupyter interpret-core-*.tar.gz[debug,notebook,plotly,lime,sensitivity,shap,linear,treeinterpreter,aplr,dash,skoperules,testing]
+  - cd <REPO_ROOT>
+  - cd docs/interpret/python/examples
+  - jupyter notebook
+  - open all the example notebooks, run them, and check the visualizations
+  - clear all outputs on all notebooks
+  - add the following lines to the top of each notebook:
+      from interpret import set_visualize_provider
+      from interpret.provider import InlineProvider
+      set_visualize_provider(InlineProvider())
+  - re-run all the notebooks and check the visualizations again
+
+- test the R package
+  - run the "--as-cran" checks on the downloaded package:
+    - TODO: add this as a step in the build pipeline so that we can just check it there, but make it not fail the pipeline if it fails since we'd then have to keep updating the date in the package
+    - cd <PACKAGE_DOWNLOAD_DIRECTORY>
+    - R CMD check --as-cran -o ../tmp/R interpret_*.tar.gz
+  - upload the R package at <PACKAGE_DOWNLOAD_DIRECTORY> to test on multiple platforms in: https://builder.r-hub.io
+  - In particular, the "Oracle Developer Studio 12.6" is worth testing as that C++ compiler is picky, and CRAN tests it
+
+- publish on NPM
+  - cd <PACKAGE_DOWNLOAD_DIRECTORY>
+  - we can't re-use previously published versions, but the visualization code is likely to remain unchanged, and our 
+    NPM package isn't really directly accessed by users, and it's used by all our different language packages, so publish this first
+  - to publish:
+    - start ubuntu window
+    - npm login
+    - it will ask for our email, which for us is the @outlook.com email, then it will ask for the "one-time password from your authenticator app" 
+      which is a confusing way to say that it has emailed us a code.
+    - npm publish interpretml-interpret-inline-*.tgz
+    - verify that is was published at: https://www.npmjs.com/package/@interpretml/interpret-inline
+
+- test the NPM interpret-inline.js
+  - TODO: how do we specify that the interpret python code uses the NPM interpret-inline.js instead of the local interpret-inline.js?
+  - re-test the bdist as above, but with the cloud interpret-inline.js
+
+- publish R package on CRAN:
+  - CRAN is very picky on warnings, so this is our first publicly visible release so that the version numbers will more likely match up with the python releases
+  - submit to CRAN at: https://cran.r-project.org/submit.html
+  - login to @outlook.com email to accept the publication
+  - wait a day (or until it's been checked)
+  - check at: https://cran.r-project.org/package=interpret
+  - wait 2-3 days if possible to see if CRAN has any issues at: https://cran.r-project.org/web/checks/check_results_interpret.html
+
+- publish on conda-forge:
+  - we can re-do a release with the same version number, unlike PyPI, so release this first for testing
+  - PRE:
+    - get the git ID:
+      - go to: https://github.com/interpretml/interpret
+      - click "commits"
+      - click "Copy the full SHA" icon
+      - open an ubuntu window
+      - get the sha256 for the tar.gz: curl -sL https://github.com/interpretml/interpret/archive/<GIT_SHA>.tar.gz | openssl sha256
+  - libebm:
+    - fork into a new github username repo from (if not already forked): https://github.com/conda-forge/libebm-feedstock
+    - sync the fork, if not already synced
+    - edit the local repo in github: https://github.com/<USERNAME>/libebm-feedstock/blob/main/recipe/meta.yaml
+      - update the version number
+      - update the github URL with the git hash
+      - update the sha256 with the tar.gz SHA hash
+      - set build number to 0
+      - POSSIBLY: re-enable any libebm tests
+      - commit the changes
+    - on the "code" page, click "contribute" to make a PR back to the conda-forge repo in: https://github.com/<USERNAME>/libebm-feedstock/blob/main/recipe/meta.yaml
+    - if a big change was made to the recipe, then add the comment: @conda-forge-admin, please rerender
+    - wait for conda-forge the build the PR. It it works, merge the PR
+    - wait for the merged code to build. conda-forge will publish it to conda.org if the build completes successfully
+    - check that the package was uploaded at: https://anaconda.org/conda-forge/libebm
+    - wait a bit longer (30 minutes seems to sometimes work) for the CDN to have an updated copy. If a rebuild is needed use: @conda-forge-admin, please restart ci
+  - interpret-core:
+    - fork into a new github username repo from (if not already forked): https://github.com/conda-forge/interpret-core-feedstock
+    - sync the fork, if not already synced
+    - edit the local repo in github: https://github.com/<USERNAME>/interpret-core-feedstock/blob/main/recipe/meta.yaml
+      - update the version number
+      - update the github URL with the git hash
+      - update the sha256 with the tar.gz SHA hash
+      - set build number to 0
+      - POSSIBLY: re-enable the pytest tests, and set "pip check" on
+      - commit the changes
+    - on the "code" page, click "contribute" to make a PR back to the conda-forge repo in: https://github.com/<USERNAME>/interpret-core-feedstock/blob/main/recipe/meta.yaml 
+    - if a big change was made to the recipe, then add the comment: @conda-forge-admin, please rerender
+    - wait for conda-forge the build the PR. It it works, merge the PR
+    - wait for the merged code to build. conda-forge will publish it to conda.org if the build completes successfully
+    - check that the package was uploaded at: https://anaconda.org/conda-forge/interpret-core
+    - wait a bit longer (30 minutes seems to sometimes work) for the CDN to have an updated copy. If a rebuild is needed use: @conda-forge-admin, please restart ci
+  - interpret (consider waiting to publish interpret until interpret-core is tested):
+    - fork into a new github username repo from (if not already forked): https://github.com/conda-forge/interpret-feedstock
+    - sync the fork, if not already synced
+    - edit the local repo in github: https://github.com/<USERNAME>/interpret-feedstock/blob/main/recipe/meta.yaml
+      - update the version number
+      - update the github URL with the git hash
+      - update the sha256 with the tar.gz SHA hash
+      - set build number to 0
+      - POSSIBLY: re-enable the pytest tests, and set "pip check" on
+      - commit the changes
+    - on the "code" page, click "contribute" to make a PR back to the conda-forge repo in: https://github.com/<USERNAME>/interpret-feedstock/blob/main/recipe/meta.yaml 
+    - if a big change was made to the recipe, then add the comment: @conda-forge-admin, please rerender
+    - wait for conda-forge the build the PR. It it works, merge the PR
+    - wait for the merged code to build. conda-forge will publish it to conda.org if the build completes successfully
+    - check that the package was uploaded at: https://anaconda.org/conda-forge/interpret
+    - wait a bit longer (30 minutes seems to sometimes work) for the CDN to have an updated copy. If a rebuild is needed use: @conda-forge-admin, please restart ci
+
+- test the conda-forge release locally since colab doesn't seem to allow libebm.so to be loadable from conda:
+  - ? Is there any way to install and run the conda package in a cloud notebook so that we can test the NPM inline js package?
+  - open anaconda console window
+  - conda env remove --name interpret_conda && conda create --yes --name interpret_conda python=3.10 && conda activate interpret_conda
+  - conda install --yes -c conda-forge interpret-core psutil ipykernel ipython plotly lime SALib shap dill dash dash-core-components dash-html-components dash-table dash_cytoscape gevent requests
+  - pip install jupyter
+  - cd <REPO_ROOT>
+  - cd docs/interpret/python/examples
+  - jupyter notebook
+  - open all the example notebooks, run them, and check the visualizations
+  - clear all outputs on all notebooks
+  - add the following lines to the top of each notebook:
+from interpret import set_visualize_provider
+from interpret.provider import InlineProvider
+set_visualize_provider(InlineProvider())
+  - re-run all the notebooks and check the visualizations again
+
+- publish on PyPI (consider waiting to publish interpret until interpret-core is tested):
+  - upload the sdist and bdist together:
+    - cd <PACKAGE_DOWNLOAD_DIRECTORY>
+    - pip install twine
+    - in an otherwise empty directory that only contains the 4 files (interpret bdist, interpret-core bdist, interpret sdist, interpret-core sdist), run
+    - twine upload interpret*
+    - fill in the username/password
+    - verify PyPI upload at:
+      https://pypi.org/project/interpret-core/#files
+      https://pypi.org/project/interpret/#files
+
+- test PyPI release on colab:
+  - https://githubtocolab.com/interpretml/interpret/blob/develop/docs/interpret/python/examples/custom-interactions.ipynb
+  - https://githubtocolab.com/interpretml/interpret/blob/develop/docs/interpret/python/examples/differential-privacy.ipynb
+  - https://githubtocolab.com/interpretml/interpret/blob/develop/docs/interpret/python/examples/explain-blackbox-classifiers.ipynb
+  - https://githubtocolab.com/interpretml/interpret/blob/develop/docs/interpret/python/examples/explain-blackbox-regressors.ipynb
+  - https://githubtocolab.com/interpretml/interpret/blob/develop/docs/interpret/python/examples/group-importances.ipynb
+  - https://githubtocolab.com/interpretml/interpret/blob/develop/docs/interpret/python/examples/interpretable-classification.ipynb
+  - https://githubtocolab.com/interpretml/interpret/blob/develop/docs/interpret/python/examples/interpretable-regression.ipynb
+  - https://githubtocolab.com/interpretml/interpret/blob/develop/docs/interpret/python/examples/interpretable-regression-synthetic.ipynb
+  - https://githubtocolab.com/interpretml/interpret/blob/develop/docs/interpret/python/examples/merge-ebms.ipynb
+  - https://githubtocolab.com/interpretml/interpret/blob/develop/docs/interpret/python/examples/prototype-selection.ipynb
+
+- test PyPI release locally:
+  - open anaconda console window
+  - conda env remove --name interpret_pypi && conda create --yes --name interpret_pypi python=3.10 && conda activate interpret_pypi
+  - pip install jupyter interpret lime  # remove lime if we remove lime from example notebooks
+  - cd <REPO_ROOT>
+  - cd docs/interpret/python/examples
+  - jupyter notebook
+  - open all the example notebooks, run them, and check the visualizations
+  - clear all outputs on all notebooks
+  - add the following lines to the top of each notebook:
+from interpret import set_visualize_provider
+from interpret.provider import InlineProvider
+set_visualize_provider(InlineProvider())
+  - re-run all the notebooks and check the visualizations again
+
+- publish the docs:
+  - delete all the files in the docs repo (except the .git directory)
+    - Also, keep the redirect files for:
+      https://interpret.ml/docs/getting-started-intro.html
+      https://interpret.ml/docs/getting-started.html
+      https://interpret.ml/docs/intro.html
+  - copy the docs that we got from the azure build pipeline into the docs repo
+  - git add --all
+  - git commit -m "update docs to v0.."
+  - compare the local html files with https://interpret.ml/docs
+  - git push
+  - verify the files are uploaded at: https://interpret.ml/docs
+
+- in github:
+  - maybe wait a day or two to see if any issues come up before advertizing the release this way
+  - select the "develop" branch
+  - in the main code window, click on "tags" next to the branch
+  - click on "releases"
+  - click on "Draft a new release"
+  - choose a tag in the format "v0.x.x", and allow it to be created
+  - set the release title to "Version 0.x.x"
+  - paste the CHANGELOG changes into the "Describe this release" window
+  - escape any underscores with '\' characters
+  - make sure the first line has the following format:
+    ## [v0.x.x] - yyyy-mm-dd
+  - Add the following at the bottom (put an empty line between them). It will make the version a link to the code:
+    [v0.x.x]: https://github.com/interpretml/interpret/tree/v0.x.x
+  - preview it just to be sure
+  - click "publish release".  Github will automatically attach the source code .zip and .tar.gz files
+- in your local git
+  - pull/fetch to get the "v0.x.x" tag that github added to the repo
+  - switch to the "main" branch
+  - merge "develop" into "main" (this will also cary along with it the tag)
+  - push the "main" branch
+- verify main and develop branch have been updated in github
+
+
+
+
+
+POWERLIFT:
+- update CHANGELOG.md
+- update version in:
+  python\powerlift\scripts\build-docker.sh
+  python\powerlift\scripts\Dockerfile (in 2 places)
+  python\powerlift\setup.py
+  python\powerlift\powerlift\_version.py

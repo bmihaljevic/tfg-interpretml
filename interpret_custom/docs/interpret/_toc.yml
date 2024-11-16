@@ -1,0 +1,98 @@
+format: jb-book
+root: index
+chapters:
+- file: interpret
+  sections:
+  - file: python/api/interpret-glassbox
+    sections:
+    - file: python/api/ExplainableBoostingClassifier
+    - file: python/api/ExplainableBoostingRegressor
+    - file: python/api/APLRRegressor
+    - file: python/api/APLRClassifier
+    - file: python/api/LogisticRegression
+    - file: python/api/LinearRegression
+    - file: python/api/ClassificationTree
+    - file: python/api/RegressionTree
+    - file: python/api/merge_ebms
+  - file: python/api/interpret-blackbox
+    sections:
+    - file: python/api/ShapKernel
+    - file: python/api/LimeTabular
+    - file: python/api/PartialDependence
+    - file: python/api/MorrisSensitivity
+  - file: python/api/interpret-greybox
+    sections:
+    - file: python/api/ShapTree
+  - file: python/api/interpret-perf
+    sections:
+    - file: python/api/RegressionPerf
+    - file: python/api/ROC
+    - file: python/api/PR
+  - file: python/api/interpret-data
+    sections:
+    - file: python/api/ClassHistogram
+    - file: python/api/Marginal
+  - file: python/api/interpret-privacy
+    sections:
+    - file: python/api/DPExplainableBoostingClassifier
+    - file: python/api/DPExplainableBoostingRegressor
+  - file: python/api/interpret-utils
+    sections:
+    - file: python/api/link_func
+    - file: python/api/inv_link
+    - file: python/api/measure_interactions
+  - file: python/api/interpret-develop
+    sections:
+    - file: python/api/debug_mode
+  - file: python/api/show
+  - file: python/api/show_link
+  - file: python/api/set_show_addr
+  - file: python/api/get_show_addr
+  - file: python/api/preserve
+  - file: python/api/shutdown_show_server
+  - file: python/api/init_show_server
+  - file: python/api/status_show_server
+  - file: python/api/set_visualize_provider
+  - file: python/api/get_visualize_provider
+- file: algorithms
+  sections:
+  - file: glassbox
+    sections:
+    - file: ebm
+    - file: aplr
+    - file: lr
+    - file: dt
+  - file: blackbox
+    sections:
+    - file: shap
+    - file: lime
+    - file: pdp
+    - file: msa
+  - file: privacy
+    sections:
+    - file: dpebm
+- file: hyperparameters
+- file: ebm-internals
+  sections:
+  - file: ebm-internals-regression
+  - file: ebm-internals-classification
+  - file: ebm-internals-multiclass
+- file: framework
+- file: deployment-guide
+- file: development
+  sections:
+  - file: installation-guide
+  - file: debugging-guide
+- file: faq
+- file: examples
+  sections:
+  - file: python/examples/interpretable-classification
+  - file: python/examples/interpretable-regression
+  - file: python/examples/interpretable-regression-synthetic
+  - file: python/examples/explain-blackbox-classifiers
+  - file: python/examples/explain-blackbox-regressors
+  - file: python/examples/merge-ebms
+  - file: python/examples/custom-interactions
+  - file: python/examples/differential-privacy
+  - file: python/examples/group-importances
+  - file: python/examples/prototype-selection

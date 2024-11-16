@@ -1,0 +1,31 @@
+# compile script output directories
+/bld/
+
+# Visual Studio
+.vs/
+enc_temp_folder/
+*.user
+TestResults/
+
+# Visual Studio Code
+.vscode/
+
+# Intellij
+.idea/
+
+# Python
+*.egg-info/
+*.ipynb_checkpoints/
+venv/
+env/
+.pytest_cache/
+__pycache__
+
+# General
+*.bak
+*.tmp
+*.csv
+*.db
+dist/
+*.env
+*.whl

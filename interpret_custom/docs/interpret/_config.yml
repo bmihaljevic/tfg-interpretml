@@ -1,0 +1,24 @@
+#######################################################################################
+# A default configuration that will be loaded for all jupyter books
+# See the documentation for help and more options: 
+# https://jupyterbook.org/customize/config.html
+
+#######################################################################################
+# Book settings
+title                       : "InterpretML documentation"  # The title of the book. Will be placed in the left navbar.
+author                      : The InterpretML Contributors  # The author of the book
+copyright                   : "2023"  # Copyright year to be placed in the footer
+logo                        : logo.png  # A path to the book logo
+
+execute:
+  timeout: -1
+  allow_errors: false
+
+sphinx:
+  config:
+    napoleon_use_ivar: True
+    autoclass_content: 'both'
+    autodoc_typehints: 'none'
+  extra_extensions:
+    - 'sphinx.ext.autodoc'
+    - 'sphinx.ext.napoleon'
