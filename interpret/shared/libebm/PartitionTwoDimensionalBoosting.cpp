@@ -17,218 +17,28 @@
 #include "GradientPair.hpp"
 #include "Bin.hpp"
 
+#include "RandomDeterministic.hpp"
 #include "ebm_stats.hpp"
-#include "Feature.hpp"
-#include "Term.hpp"
 #include "Tensor.hpp"
 #include "TensorTotalsSum.hpp"
 #include "TreeNode.hpp"
-#include "BoosterCore.hpp"
-#include "BoosterShell.hpp"
 
 namespace DEFINED_ZONE_NAME {
 #ifndef DEFINED_ZONE_NAME
 #error DEFINED_ZONE_NAME must be defined
 #endif // DEFINED_ZONE_NAME
 
-template<bool bHessian, size_t cCompilerScores, size_t cCompilerDimensions>
-static FloatCalc SweepMultiDimensional(const size_t cRuntimeScores,
-      const size_t cRuntimeRealDimensions,
-      const TermBoostFlags flags,
-      const size_t* const aiPoint,
-      const size_t* const acBins,
-      const size_t directionVectorLow,
-      const size_t iDimensionSweep,
-      const Bin<FloatMain, UIntMain, true, true, bHessian, GetArrayScores(cCompilerScores)>* const aBins,
-      const size_t cSamplesLeafMin,
-      const FloatCalc hessianMin,
-      const FloatCalc regAlpha,
-      const FloatCalc regLambda,
-      const FloatCalc deltaStepMax,
-      Bin<FloatMain, UIntMain, true, true, bHessian, GetArrayScores(cCompilerScores)>* const pBinBestAndTemp,
-      size_t* const piBestSplit
-#ifndef NDEBUG
-      ,
-      const Bin<FloatMain, UIntMain, true, true, bHessian, GetArrayScores(cCompilerScores)>* const aDebugCopyBins,
-      const BinBase* const pBinsEndDebug
-#endif // NDEBUG
-) {
-   const size_t cScores = GET_COUNT_SCORES(cCompilerScores, cRuntimeScores);
-   const size_t cBytesPerBin = GetBinSize<FloatMain, UIntMain>(true, true, bHessian, cScores);
-
-   const size_t cRealDimensions = GET_COUNT_DIMENSIONS(cCompilerDimensions, cRuntimeRealDimensions);
-   EBM_ASSERT(1 <= cRealDimensions); // for interactions, we just return 0 for interactions with zero features
-   EBM_ASSERT(iDimensionSweep < cRealDimensions);
-   EBM_ASSERT(0 == (directionVectorLow & (size_t{1} << iDimensionSweep)));
-
-   TensorSumDimension aDimensions[k_dynamicDimensions == cCompilerDimensions ? k_cDimensionsMax : cCompilerDimensions];
-   size_t directionDestroy = directionVectorLow;
-   size_t iDimensionInit = 0;
-   do {
-      aDimensions[iDimensionInit].m_cBins = acBins[iDimensionInit];
-      if(0 != (size_t{1} & directionDestroy)) {
-         aDimensions[iDimensionInit].m_iLow = aiPoint[iDimensionInit] + 1;
-         aDimensions[iDimensionInit].m_iHigh = acBins[iDimensionInit];
-      } else {
-         aDimensions[iDimensionInit].m_iLow = 0;
-         aDimensions[iDimensionInit].m_iHigh = aiPoint[iDimensionInit] + 1;
-      }
-      directionDestroy >>= 1;
-      ++iDimensionInit;
-   } while(cRealDimensions != iDimensionInit);
-
-   const size_t cSweepCuts = aDimensions[iDimensionSweep].m_cBins - 1;
-   EBM_ASSERT(1 <= cSweepCuts); // dimensions with 1 bin are removed earlier
-
-   size_t iBestSplit = 0;
-
-   auto* const p_DO_NOT_USE_DIRECTLY_Low = IndexBin(pBinBestAndTemp, cBytesPerBin * 2);
-   ASSERT_BIN_OK(cBytesPerBin, p_DO_NOT_USE_DIRECTLY_Low, pBinsEndDebug);
-   auto* const p_DO_NOT_USE_DIRECTLY_High = IndexBin(pBinBestAndTemp, cBytesPerBin * 3);
-   ASSERT_BIN_OK(cBytesPerBin, p_DO_NOT_USE_DIRECTLY_High, pBinsEndDebug);
-
-   Bin<FloatMain, UIntMain, true, true, bHessian, GetArrayScores(cCompilerScores)> binLow;
-   Bin<FloatMain, UIntMain, true, true, bHessian, GetArrayScores(cCompilerScores)> binHigh;
-
-   // if we know how many scores there are, use the memory on the stack where the compiler can optimize access
-   static constexpr bool bUseStackMemory = k_dynamicScores != cCompilerScores;
-   auto* const aGradientPairsLow =
-         bUseStackMemory ? binLow.GetGradientPairs() : p_DO_NOT_USE_DIRECTLY_Low->GetGradientPairs();
-   auto* const aGradientPairsHigh =
-         bUseStackMemory ? binHigh.GetGradientPairs() : p_DO_NOT_USE_DIRECTLY_High->GetGradientPairs();
-
-   EBM_ASSERT(std::numeric_limits<FloatCalc>::min() <= hessianMin);
-
-   const bool bUseLogitBoost = bHessian && !(TermBoostFlags_DisableNewtonGain & flags);
-
-   // our TensorTotalsSum needs to be templated as dynamic if we want to have something other than 2 dimensions
-   EBM_ASSERT(2 == cRealDimensions);
-
-   FloatCalc bestGain = k_illegalGainFloat;
-   size_t iBin = 0;
-   do {
-      aDimensions[iDimensionSweep].m_iLow = 0;
-      aDimensions[iDimensionSweep].m_iHigh = iBin + 1;
-      TensorTotalsSum<bHessian, cCompilerScores, cCompilerDimensions>(cScores,
-            cRealDimensions,
-            aDimensions,
-            aBins,
-            binLow,
-            aGradientPairsLow
-#ifndef NDEBUG
-            ,
-            aDebugCopyBins,
-            pBinsEndDebug
-#endif // NDEBUG
-      );
-      if(binLow.GetCountSamples() < cSamplesLeafMin) {
-         goto next;
-      }
-
-      aDimensions[iDimensionSweep].m_iLow = iBin + 1;
-      aDimensions[iDimensionSweep].m_iHigh = aDimensions[iDimensionSweep].m_cBins;
-      TensorTotalsSum<bHessian, cCompilerScores, cCompilerDimensions>(cScores,
-            cRealDimensions,
-            aDimensions,
-            aBins,
-            binHigh,
-            aGradientPairsHigh
-#ifndef NDEBUG
-            ,
-            aDebugCopyBins,
-            pBinsEndDebug
-#endif // NDEBUG
-      );
-      if(binHigh.GetCountSamples() < cSamplesLeafMin) {
-         goto next;
-      }
-
-      // if (0 != (TermBoostFlags_PurifyGain & flags)) {
-      //  TODO: At this point we have the bin sums histogram for the tensor, so we can purify the future update
-      //  for the cuts we're currently evaluating before calculating the gain. This should give us a more accurate gain
-      //  calculation for the purified update. We need to construct the entire tensor here before purifying.
-      //  We already calculate purified gain as an option during interaction detection, since the
-      //  interaction metric we use is the gain calculation.
-      //  See: Use of CalcInteractionFlags_Purify in PartitionTwoDimensionalInteraction.cpp
-      //}
-
-      {
-         FloatCalc gain = 0;
-         EBM_ASSERT(0 < binLow.GetCountSamples());
-         EBM_ASSERT(0 < binHigh.GetCountSamples());
-
-         EBM_ASSERT(1 <= cScores);
-         size_t iScore = 0;
-         do {
-            FloatCalc hessianLow;
-            if(bUseLogitBoost) {
-               hessianLow = static_cast<FloatCalc>(aGradientPairsLow[iScore].GetHess());
-            } else {
-               hessianLow = static_cast<FloatCalc>(binLow.GetWeight());
-            }
-            if(hessianLow < hessianMin) {
-               goto next;
-            }
-
-            FloatCalc hessianHigh;
-            if(bUseLogitBoost) {
-               hessianHigh = static_cast<FloatCalc>(aGradientPairsHigh[iScore].GetHess());
-            } else {
-               hessianHigh = static_cast<FloatCalc>(binHigh.GetWeight());
-            }
-            if(hessianHigh < hessianMin) {
-               goto next;
-            }
-
-            const FloatCalc gain1 = CalcPartialGain(static_cast<FloatCalc>(aGradientPairsLow[iScore].m_sumGradients),
-                  hessianLow,
-                  regAlpha,
-                  regLambda,
-                  deltaStepMax);
-            EBM_ASSERT(std::isnan(gain1) || 0 <= gain1);
-            gain += gain1;
-
-            const FloatCalc gain2 = CalcPartialGain(static_cast<FloatCalc>(aGradientPairsHigh[iScore].m_sumGradients),
-                  hessianHigh,
-                  regAlpha,
-                  regLambda,
-                  deltaStepMax);
-            EBM_ASSERT(std::isnan(gain2) || 0 <= gain2);
-            gain += gain2;
-
-            ++iScore;
-         } while(cScores != iScore);
-         EBM_ASSERT(std::isnan(gain) || 0 <= gain); // sumation of positive numbers should be positive
-
-         if(UNLIKELY(/* NaN */ !LIKELY(gain <= bestGain))) {
-            // propagate NaNs
-
-            bestGain = gain;
-            iBestSplit = iBin;
-
-            auto* const pTotalsLowOut = IndexBin(pBinBestAndTemp, cBytesPerBin * 0);
-            ASSERT_BIN_OK(cBytesPerBin, pTotalsLowOut, pBinsEndDebug);
-
-            pTotalsLowOut->Copy(cScores, binLow, aGradientPairsLow);
-
-            auto* const pTotalsHighOut = IndexBin(pBinBestAndTemp, cBytesPerBin * 1);
-            ASSERT_BIN_OK(cBytesPerBin, pTotalsHighOut, pBinsEndDebug);
-
-            pTotalsHighOut->Copy(cScores, binHigh, aGradientPairsHigh);
-         } else {
-            EBM_ASSERT(!std::isnan(gain));
-         }
-      }
-
-   next:;
-
-      ++iBin;
-   } while(cSweepCuts != iBin);
-   *piBestSplit = iBestSplit;
-
-   EBM_ASSERT(std::isnan(bestGain) || k_illegalGainFloat == bestGain || FloatCalc{0} <= bestGain);
-   return bestGain;
-}
+extern ErrorEbm PurifyInternal(const double tolerance,
+      const size_t cScores,
+      const size_t cTensorBins,
+      const size_t cSurfaceBins,
+      RandomDeterministic* const pRng,
+      size_t* const aRandomize,
+      const size_t* const aDimensionLengths,
+      const double* const aWeights,
+      double* const pScores,
+      double* const pImpurities,
+      double* const pIntercept);
 
 template<bool bHessian, size_t cCompilerScores, size_t cCompilerDimensions>
 INLINE_RELEASE_TEMPLATED static ErrorEbm MakeTensor(const size_t cRuntimeScores,
@@ -456,15 +266,20 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
 
    WARNING_PUSH
    WARNING_DISABLE_UNINITIALIZED_LOCAL_VARIABLE
-   INLINE_RELEASE_UNTEMPLATED static ErrorEbm Func(BoosterShell* const pBoosterShell,
+   INLINE_RELEASE_UNTEMPLATED static ErrorEbm Func(const size_t cRuntimeScores,
+         const size_t cDimensions,
+         const size_t cRealDimensions,
          const TermBoostFlags flags,
-         const Term* const pTerm,
          const size_t cSamplesLeafMin,
          const FloatCalc hessianMin,
          const FloatCalc regAlpha,
          const FloatCalc regLambda,
          const FloatCalc deltaStepMax,
+         const BinBase* const aBinsBase,
          BinBase* const aAuxiliaryBinsBase,
+         Tensor* const pInnerTermUpdate,
+         void* const pRootTreeNodeBase,
+         const size_t* const acBins,
          double* const aTensorWeights,
          double* const aTensorGrad,
          double* const aTensorHess,
@@ -473,27 +288,23 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
          unsigned char** const aaSplits
 #ifndef NDEBUG
          ,
-         const BinBase* const aDebugCopyBinsBase
+         const BinBase* const aDebugCopyBinsBase,
+         const BinBase* const pBinsEndDebug
 #endif // NDEBUG
    ) {
       static constexpr size_t cCompilerDimensions = k_dynamicDimensions;
-      const size_t cRealDimensions = pTerm->GetCountRealDimensions();
 
       ErrorEbm error;
-      BoosterCore* const pBoosterCore = pBoosterShell->GetBoosterCore();
 
       auto* const aBins =
-            pBoosterShell->GetBoostingMainBins()
-                  ->Specialize<FloatMain, UIntMain, true, true, bHessian, GetArrayScores(cCompilerScores)>();
-      Tensor* const pInnerTermUpdate = pBoosterShell->GetInnerTermUpdate();
+            aBinsBase->Specialize<FloatMain, UIntMain, true, true, bHessian, GetArrayScores(cCompilerScores)>();
 
-      const size_t cRuntimeScores = pBoosterCore->GetCountScores();
       const size_t cScores = GET_COUNT_SCORES(cCompilerScores, cRuntimeScores);
       const size_t cBytesPerBin = GetBinSize<FloatMain, UIntMain>(true, true, bHessian, cScores);
       const size_t cBytesTreeNodeMulti = GetTreeNodeMultiSize(bHessian, cScores);
 
-      auto* const pRootTreeNode = reinterpret_cast<TreeNodeMulti<bHessian, GetArrayScores(cCompilerScores)>*>(
-            pBoosterShell->GetTreeNodeMultiTemp());
+      auto* const pRootTreeNode =
+            reinterpret_cast<TreeNodeMulti<bHessian, GetArrayScores(cCompilerScores)>*>(pRootTreeNodeBase);
 
       // each dimension requires 2 tree nodes, plus one for the last
       const size_t cBytesBest = cBytesTreeNodeMulti * (size_t{1} + (cRealDimensions << 1));
@@ -524,16 +335,14 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
 
       size_t iDimensionLoop = 0;
       size_t iDimInit = 0;
-      const TermFeature* const aTermFeatures = pTerm->GetTermFeatures();
       size_t aiOriginalIndex[k_dynamicDimensions == cCompilerDimensions ? k_cDimensionsMax : cCompilerDimensions];
 #ifndef NDEBUG
       size_t aiDEBUGDim[k_dynamicDimensions == cCompilerDimensions ? k_cDimensionsMax : cCompilerDimensions];
 #endif // NDEBUG
       EBM_ASSERT(1 <= cRealDimensions);
       do {
-         EBM_ASSERT(iDimensionLoop < pTerm->GetCountDimensions());
-         const FeatureBoosting* const pFeature = aTermFeatures[iDimensionLoop].m_pFeature;
-         const size_t cBins = pFeature->GetCountBins();
+         EBM_ASSERT(iDimensionLoop < cDimensions);
+         const size_t cBins = acBins[iDimensionLoop];
          EBM_ASSERT(size_t{1} <= cBins); // we don't boost on empty training sets
          if(size_t{1} < cBins) {
             aiOriginalIndex[iDimInit] = iDimensionLoop;
@@ -573,7 +382,10 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
       pTreeNode->SetParent(pParentTreeNode);
       pTreeNode->SetChildren(pHigh); // we need to set it to something because we access this pointer below
 
-      FloatCalc bestGain = k_illegalGainFloat;
+      // TODO: we should calculate the default partial gain before splitting anything. Once we have that
+      // number we can calculate the minimum gain we need to reach k_gainMin after the cuts are made
+      // which will allow us to avoid some work when the eventual gain will be less than our minimum
+      FloatCalc bestGain = -std::numeric_limits<double>::infinity(); // do not allow bad cuts that lead to negative gain
 
       EBM_ASSERT(std::numeric_limits<FloatCalc>::min() <= hessianMin);
 
@@ -630,6 +442,7 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
                // and one cut in the 1st dimension on the lower side of the 0th dimension cut, then if we move the
                // cut along the 1st dimension, the tensor sum on the opposite since is not changing.
                FloatCalc gain = 0.0;
+
                pTreeNode = pDeepTreeNode;
                TreeNodeMulti<bHessian, GetArrayScores(cCompilerScores)>* pNextTreeNode;
                do {
@@ -658,7 +471,7 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
 #ifndef NDEBUG
                            ,
                            aDebugCopyBins,
-                           pBoosterShell->GetDebugMainBinsEnd()
+                           pBinsEndDebug
 #endif // NDEBUG
                      );
 
@@ -678,7 +491,7 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
                         }
 
                         const FloatCalc gain1 =
-                              CalcPartialGain(static_cast<FloatCalc>(aGradientPairsLocal[iScore].m_sumGradients),
+                              CalcPartialGain<false>(static_cast<FloatCalc>(aGradientPairsLocal[iScore].m_sumGradients),
                                     hessian,
                                     regAlpha,
                                     regLambda,
@@ -710,7 +523,7 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
 #ifndef NDEBUG
                            ,
                            aDebugCopyBins,
-                           pBoosterShell->GetDebugMainBinsEnd()
+                           pBinsEndDebug
 #endif // NDEBUG
                      );
 
@@ -730,7 +543,7 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
                         }
 
                         const FloatCalc gain1 =
-                              CalcPartialGain(static_cast<FloatCalc>(aGradientPairsLocal[iScore].m_sumGradients),
+                              CalcPartialGain<false>(static_cast<FloatCalc>(aGradientPairsLocal[iScore].m_sumGradients),
                                     hessian,
                                     regAlpha,
                                     regLambda,
@@ -749,6 +562,121 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
 
                   pTreeNode = pNextTreeNode;
                } while(nullptr != pTreeNode);
+
+               if(0 != (TermBoostFlags_PurifyGain & flags)) {
+                  // TODO: we're doing extra computation above when we calculate the unpurified gain so eliminate that
+
+                  gain = 0.0;
+                  error = MakeTensor<bHessian, cCompilerScores, cCompilerDimensions>(cScores,
+                        cRealDimensions,
+                        flags,
+                        aBins,
+                        regAlpha,
+                        regLambda,
+                        deltaStepMax,
+                        aTensorWeights,
+                        aTensorGrad,
+                        aTensorHess,
+                        cPossibleSplits,
+                        aaSplits,
+                        pDeepTreeNode,
+                        aiOriginalIndex,
+                        aDimensions,
+                        aAuxiliaryBins,
+                        pInnerTermUpdate
+#ifndef NDEBUG
+                        ,
+                        aDebugCopyBins,
+                        pBinsEndDebug
+#endif // NDEBUG
+                  );
+
+                  if(Error_None != error) {
+                     return error;
+                  }
+
+                  // TODO: the code below is duplicated in GenerateTempUpdate, so we can probably
+                  // put both of them into a function that we call from both places
+
+                  Tensor* const pTensor = pInnerTermUpdate;
+
+                  double* pGradient = aTensorGrad;
+                  double* pHessian = aTensorHess;
+
+                  size_t cTensorBinsPurify = 1;
+                  size_t iDimension = 0;
+                  do {
+                     const size_t cBins = pTensor->GetCountSlices(iDimension);
+                     cTensorBinsPurify *= cBins;
+                     ++iDimension;
+                  } while(cDimensions != iDimension);
+
+                  size_t acPurifyBins[k_dynamicDimensions == cCompilerDimensions ? k_cDimensionsMax :
+                                                                                   cCompilerDimensions];
+                  size_t* pcPurifyBins = acPurifyBins;
+                  size_t cSurfaceBinsTotal = 0;
+                  iDimension = 0;
+                  do {
+                     const size_t cBins = pTensor->GetCountSlices(iDimension);
+                     if(size_t{1} < cBins) {
+                        *pcPurifyBins = cBins;
+                        EBM_ASSERT(0 == cTensorBinsPurify % cBins);
+                        const size_t cExcludeSurfaceBins = cTensorBinsPurify / cBins;
+                        cSurfaceBinsTotal += cExcludeSurfaceBins;
+                        ++pcPurifyBins;
+                     }
+                     ++iDimension;
+                  } while(cDimensions != iDimension);
+
+                  constexpr double tolerance =
+                        0.0; // TODO: for now purify to the max, but test tolerances and profile them
+
+                  // TODO: in the future try randomizing the purification order.  It probably doesn't make much
+                  // difference
+                  //       though if we're purifying to the 0.0 tolerance, and it might make things slower, although we
+                  //       could see a speed increase if it allows us to use bigger tolerance values.
+
+                  double* pScores = pTensor->GetTensorScoresPointer();
+                  const double* const pScoreMulticlassEnd = &pScores[cScores];
+                  do {
+                     // ignore the return from PurifyInternal since we should check for NaN in the weights
+                     // earlier and the checks in PurifyInternal are only for the stand-alone purification API
+                     PurifyInternal(tolerance,
+                           cScores,
+                           cTensorBinsPurify,
+                           cSurfaceBinsTotal,
+                           nullptr,
+                           nullptr,
+                           acPurifyBins,
+                           aTensorWeights,
+                           pScores,
+                           nullptr,
+                           nullptr);
+                     ++pScores;
+                  } while(pScoreMulticlassEnd != pScores);
+
+                  // When calculating purified gain, we do not subtract
+                  // the parent since the pure partial gain is always zero.
+                  double* pScore = pTensor->GetTensorScoresPointer();
+                  EBM_ASSERT(!IsMultiplyError(cTensorBinsPurify, cScores)); // we have allocated it
+                  double* pScoreEnd = pScore + cTensorBinsPurify * cScores;
+                  double* pWeight = aTensorWeights;
+                  do {
+                     double hess = *pWeight;
+                     for(size_t iScore = 0; iScore < cScores; ++iScore) {
+                        double grad = *pGradient;
+                        if(nullptr != pHessian) {
+                           hess = *pHessian;
+                           ++pHessian;
+                        }
+                        double update = *pScore;
+                        gain += CalcPartialGainFromUpdate<true>(grad, hess, -update, regAlpha, regLambda);
+                        ++pGradient;
+                        ++pScore;
+                     }
+                     ++pWeight;
+                  } while(pScoreEnd != pScore);
+               }
 
                if(UNLIKELY(/* NaN */ !LIKELY(gain <= bestGain))) {
                   // propagate NaNs
@@ -885,36 +813,13 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
       }
    done:;
 
-      auto* pCurTreeNode = pRootTreeNode;
-      EBM_ASSERT(nullptr == pCurTreeNode->GetParent());
-      while(true) {
-         EBM_ASSERT(nullptr != pCurTreeNode->GetChildren());
-         const size_t cBytesOffset1 =
-               reinterpret_cast<char*>(pCurTreeNode->GetChildren()) - reinterpret_cast<char*>(pDeepTreeNode);
-         TreeNodeMulti<bHessian, GetArrayScores(cCompilerScores)>* const pNode1 =
-               IndexTreeNodeMulti(pRootTreeNode, cBytesOffset1);
-         pCurTreeNode->SetChildren(pNode1);
-
-         pCurTreeNode = IndexTreeNodeMulti(pCurTreeNode, cBytesTreeNodeMulti);
-         if(pDeepTreeNode == pCurTreeNode) {
-            break;
-         }
-
-         EBM_ASSERT(nullptr != pCurTreeNode->GetParent());
-         const size_t cBytesOffset2 =
-               reinterpret_cast<char*>(pCurTreeNode->GetParent()) - reinterpret_cast<char*>(pDeepTreeNode);
-         TreeNodeMulti<bHessian, GetArrayScores(cCompilerScores)>* const pNode2 =
-               IndexTreeNodeMulti(pRootTreeNode, cBytesOffset2);
-         pCurTreeNode->SetParent(pNode2);
-      }
-
       EBM_ASSERT(std::isnan(bestGain) || k_illegalGainFloat == bestGain || FloatCalc{0} <= bestGain);
 
       // the bin before the aAuxiliaryBins is the last summation bin of aBinsBase,
       // which contains the totals of all bins
       const auto* const pTotal = NegativeIndexBin(aAuxiliaryBins, cBytesPerBin);
 
-      ASSERT_BIN_OK(cBytesPerBin, pTotal, pBoosterShell->GetDebugMainBinsEnd());
+      ASSERT_BIN_OK(cBytesPerBin, pTotal, pBinsEndDebug);
 
       const auto* const pGradientPairTotal = pTotal->GetGradientPairs();
 
@@ -935,22 +840,29 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
             EBM_ASSERT(0 <= bestGain);
             EBM_ASSERT(std::numeric_limits<FloatCalc>::infinity() != bestGain);
 
-            // now subtract the parent partial gain
-            for(size_t iScore = 0; iScore < cScores; ++iScore) {
-               const FloatCalc hess =
-                     static_cast<FloatCalc>(bUseLogitBoost ? pGradientPairTotal[iScore].GetHess() : weightAll);
+            if(0 == (TermBoostFlags_PurifyGain & flags)) {
+               // for purified, we don't subtract the parent since the parent's partial gain is zero when purified
 
-               // we would not get there unless there was a legal cut, which requires that hessianMin <= hess
-               EBM_ASSERT(hessianMin <= hess);
+               // TODO: we should move this computation to the top and then calculate how much gain we need
+               // for the split in order to reach the k_gainMin value
 
-               const FloatCalc gain1 =
-                     CalcPartialGain(static_cast<FloatCalc>(pGradientPairTotal[iScore].m_sumGradients),
-                           hess,
-                           regAlpha,
-                           regLambda,
-                           deltaStepMax);
-               EBM_ASSERT(std::isnan(gain1) || 0 <= gain1);
-               bestGain -= gain1;
+               // now subtract the parent partial gain
+               for(size_t iScore = 0; iScore < cScores; ++iScore) {
+                  const FloatCalc hess =
+                        static_cast<FloatCalc>(bUseLogitBoost ? pGradientPairTotal[iScore].GetHess() : weightAll);
+
+                  // we would not get there unless there was a legal cut, which requires that hessianMin <= hess
+                  EBM_ASSERT(hessianMin <= hess);
+
+                  const FloatCalc gain1 =
+                        CalcPartialGain<false>(static_cast<FloatCalc>(pGradientPairTotal[iScore].m_sumGradients),
+                              hess,
+                              regAlpha,
+                              regLambda,
+                              deltaStepMax);
+                  EBM_ASSERT(std::isnan(gain1) || 0 <= gain1);
+                  bestGain -= gain1;
+               }
             }
 
             EBM_ASSERT(std::numeric_limits<FloatCalc>::infinity() != bestGain);
@@ -965,6 +877,29 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
                *pTotalGain = 0;
                if(LIKELY(k_gainMin <= bestGain)) {
                   *pTotalGain = static_cast<double>(bestGain);
+
+                  auto* pCurTreeNode = pRootTreeNode;
+                  EBM_ASSERT(nullptr == pCurTreeNode->GetParent());
+                  while(true) {
+                     EBM_ASSERT(nullptr != pCurTreeNode->GetChildren());
+                     const size_t cBytesOffset1 = reinterpret_cast<char*>(pCurTreeNode->GetChildren()) -
+                           reinterpret_cast<char*>(pDeepTreeNode);
+                     TreeNodeMulti<bHessian, GetArrayScores(cCompilerScores)>* const pNode1 =
+                           IndexTreeNodeMulti(pRootTreeNode, cBytesOffset1);
+                     pCurTreeNode->SetChildren(pNode1);
+
+                     pCurTreeNode = IndexTreeNodeMulti(pCurTreeNode, cBytesTreeNodeMulti);
+                     if(pDeepTreeNode == pCurTreeNode) {
+                        break;
+                     }
+
+                     EBM_ASSERT(nullptr != pCurTreeNode->GetParent());
+                     const size_t cBytesOffset2 =
+                           reinterpret_cast<char*>(pCurTreeNode->GetParent()) - reinterpret_cast<char*>(pDeepTreeNode);
+                     TreeNodeMulti<bHessian, GetArrayScores(cCompilerScores)>* const pNode2 =
+                           IndexTreeNodeMulti(pRootTreeNode, cBytesOffset2);
+                     pCurTreeNode->SetParent(pNode2);
+                  }
 
                   error = MakeTensor<bHessian, cCompilerScores, cCompilerDimensions>(cScores,
                         cRealDimensions,
@@ -986,7 +921,7 @@ template<bool bHessian, size_t cCompilerScores> class PartitionTwoDimensionalBoo
 #ifndef NDEBUG
                         ,
                         aDebugCopyBins,
-                        pBoosterShell->GetDebugMainBinsEnd()
+                        pBinsEndDebug
 #endif // NDEBUG
                   );
                   if(Error_None != error) {
@@ -1053,15 +988,20 @@ template<bool bHessian, size_t cPossibleScores> class PartitionTwoDimensionalBoo
  public:
    PartitionTwoDimensionalBoostingTarget() = delete; // this is a static class.  Do not construct
 
-   INLINE_RELEASE_UNTEMPLATED static ErrorEbm Func(BoosterShell* const pBoosterShell,
+   INLINE_RELEASE_UNTEMPLATED static ErrorEbm Func(const size_t cRuntimeScores,
+         const size_t cDimensions,
+         const size_t cRealDimensions,
          const TermBoostFlags flags,
-         const Term* const pTerm,
          const size_t cSamplesLeafMin,
          const FloatCalc hessianMin,
          const FloatCalc regAlpha,
          const FloatCalc regLambda,
          const FloatCalc deltaStepMax,
-         BinBase* aAuxiliaryBinsBase,
+         const BinBase* const aBinsBase,
+         BinBase* const aAuxiliaryBinsBase,
+         Tensor* const pInnerTermUpdate,
+         void* const pRootTreeNodeBase,
+         const size_t* const acBins,
          double* const aTensorWeights,
          double* const aTensorGrad,
          double* const aTensorHess,
@@ -1070,20 +1010,25 @@ template<bool bHessian, size_t cPossibleScores> class PartitionTwoDimensionalBoo
          unsigned char** const aaSplits
 #ifndef NDEBUG
          ,
-         const BinBase* const aDebugCopyBinsBase
+         const BinBase* const aDebugCopyBinsBase,
+         const BinBase* const pBinsEndDebug
 #endif // NDEBUG
    ) {
-      BoosterCore* const pBoosterCore = pBoosterShell->GetBoosterCore();
-      if(cPossibleScores == pBoosterCore->GetCountScores()) {
-         return PartitionTwoDimensionalBoostingInternal<bHessian, cPossibleScores>::Func(pBoosterShell,
+      if(cPossibleScores == cRuntimeScores) {
+         return PartitionTwoDimensionalBoostingInternal<bHessian, cPossibleScores>::Func(cRuntimeScores,
+               cDimensions,
+               cRealDimensions,
                flags,
-               pTerm,
                cSamplesLeafMin,
                hessianMin,
                regAlpha,
                regLambda,
                deltaStepMax,
+               aBinsBase,
                aAuxiliaryBinsBase,
+               pInnerTermUpdate,
+               pRootTreeNodeBase,
+               acBins,
                aTensorWeights,
                aTensorGrad,
                aTensorHess,
@@ -1092,19 +1037,25 @@ template<bool bHessian, size_t cPossibleScores> class PartitionTwoDimensionalBoo
                aaSplits
 #ifndef NDEBUG
                ,
-               aDebugCopyBinsBase
+               aDebugCopyBinsBase,
+               pBinsEndDebug
 #endif // NDEBUG
          );
       } else {
-         return PartitionTwoDimensionalBoostingTarget<bHessian, cPossibleScores + 1>::Func(pBoosterShell,
+         return PartitionTwoDimensionalBoostingTarget<bHessian, cPossibleScores + 1>::Func(cRuntimeScores,
+               cDimensions,
+               cRealDimensions,
                flags,
-               pTerm,
                cSamplesLeafMin,
                hessianMin,
                regAlpha,
                regLambda,
                deltaStepMax,
+               aBinsBase,
                aAuxiliaryBinsBase,
+               pInnerTermUpdate,
+               pRootTreeNodeBase,
+               acBins,
                aTensorWeights,
                aTensorGrad,
                aTensorHess,
@@ -1113,7 +1064,8 @@ template<bool bHessian, size_t cPossibleScores> class PartitionTwoDimensionalBoo
                aaSplits
 #ifndef NDEBUG
                ,
-               aDebugCopyBinsBase
+               aDebugCopyBinsBase,
+               pBinsEndDebug
 #endif // NDEBUG
          );
       }
@@ -1124,15 +1076,20 @@ template<bool bHessian> class PartitionTwoDimensionalBoostingTarget<bHessian, k_
  public:
    PartitionTwoDimensionalBoostingTarget() = delete; // this is a static class.  Do not construct
 
-   INLINE_RELEASE_UNTEMPLATED static ErrorEbm Func(BoosterShell* const pBoosterShell,
+   INLINE_RELEASE_UNTEMPLATED static ErrorEbm Func(const size_t cRuntimeScores,
+         const size_t cDimensions,
+         const size_t cRealDimensions,
          const TermBoostFlags flags,
-         const Term* const pTerm,
          const size_t cSamplesLeafMin,
          const FloatCalc hessianMin,
          const FloatCalc regAlpha,
          const FloatCalc regLambda,
          const FloatCalc deltaStepMax,
-         BinBase* aAuxiliaryBinsBase,
+         const BinBase* const aBinsBase,
+         BinBase* const aAuxiliaryBinsBase,
+         Tensor* const pInnerTermUpdate,
+         void* const pRootTreeNodeBase,
+         const size_t* const acBins,
          double* const aTensorWeights,
          double* const aTensorGrad,
          double* const aTensorHess,
@@ -1141,18 +1098,24 @@ template<bool bHessian> class PartitionTwoDimensionalBoostingTarget<bHessian, k_
          unsigned char** const aaSplits
 #ifndef NDEBUG
          ,
-         const BinBase* const aDebugCopyBinsBase
+         const BinBase* const aDebugCopyBinsBase,
+         const BinBase* const pBinsEndDebug
 #endif // NDEBUG
    ) {
-      return PartitionTwoDimensionalBoostingInternal<bHessian, k_dynamicScores>::Func(pBoosterShell,
+      return PartitionTwoDimensionalBoostingInternal<bHessian, k_dynamicScores>::Func(cRuntimeScores,
+            cDimensions,
+            cRealDimensions,
             flags,
-            pTerm,
             cSamplesLeafMin,
             hessianMin,
             regAlpha,
             regLambda,
             deltaStepMax,
+            aBinsBase,
             aAuxiliaryBinsBase,
+            pInnerTermUpdate,
+            pRootTreeNodeBase,
+            acBins,
             aTensorWeights,
             aTensorGrad,
             aTensorHess,
@@ -1161,112 +1124,55 @@ template<bool bHessian> class PartitionTwoDimensionalBoostingTarget<bHessian, k_
             aaSplits
 #ifndef NDEBUG
             ,
-            aDebugCopyBinsBase
+            aDebugCopyBinsBase,
+            pBinsEndDebug
 #endif // NDEBUG
       );
    }
 };
 
-extern ErrorEbm PartitionTwoDimensionalBoosting(BoosterShell* const pBoosterShell,
+extern ErrorEbm PartitionTwoDimensionalBoosting(const bool bHessian,
+      const size_t cRuntimeScores,
+      const size_t cDimensions,
+      const size_t cRealDimensions,
       const TermBoostFlags flags,
-      const Term* const pTerm,
-      const size_t* const acBins,
       const size_t cSamplesLeafMin,
       const FloatCalc hessianMin,
       const FloatCalc regAlpha,
       const FloatCalc regLambda,
       const FloatCalc deltaStepMax,
-      BinBase* aAuxiliaryBinsBase,
+      const BinBase* const aBinsBase,
+      BinBase* const aAuxiliaryBinsBase,
+      Tensor* const pInnerTermUpdate,
+      void* const pRootTreeNodeBase,
+      const size_t* const acBins,
       double* const aTensorWeights,
       double* const aTensorGrad,
       double* const aTensorHess,
-      double* const pTotalGain
+      double* const pTotalGain,
+      const size_t cPossibleSplits,
+      void* const pTemp1
 #ifndef NDEBUG
       ,
-      const BinBase* const aDebugCopyBinsBase
+      const BinBase* const aDebugCopyBinsBase,
+      const BinBase* const pBinsEndDebug
 #endif // NDEBUG
 ) {
-   BoosterCore* const pBoosterCore = pBoosterShell->GetBoosterCore();
-   const size_t cRuntimeScores = pBoosterCore->GetCountScores();
-   const bool bHessian = pBoosterCore->IsHessian();
+   ErrorEbm error;
 
-   if(IsOverflowBinSize<FloatMain, UIntMain>(true, true, bHessian, cRuntimeScores)) {
-      // TODO: move this to init
-      return Error_OutOfMemory;
-   }
-
-   if(IsOverflowTreeNodeMultiSize(bHessian, cRuntimeScores)) {
-      // TODO: move this to init
-      return Error_OutOfMemory;
-   }
-
-   size_t cPossibleSplits = 0;
-
-   size_t cBytes = 1;
-   const size_t* pcBins = acBins;
-   const size_t* const acBinsEnd = acBins + pTerm->GetCountRealDimensions();
-   do {
-      const size_t cBins = *pcBins;
-      const size_t cSplits = cBins - 1;
-      if(IsAddError(cPossibleSplits, cSplits)) {
-         return Error_OutOfMemory;
-      }
-      cPossibleSplits += cSplits;
-      if(IsMultiplyError(cBins, cBytes)) {
-         return Error_OutOfMemory;
-      }
-      cBytes *= cBins;
-      ++pcBins;
-   } while(acBinsEnd != pcBins);
-   // For pairs, this calculates the exact max number of splits. For higher dimensions
-   // the max number of splits will be less, but it should be close enough.
-   // Each bin gets a tree node to record the gradient totals, and each split gets a TreeNode
-   // during construction. Each split contains a minimum of 1 bin on each side, so we have
-   // cBins - 1 potential splits.
-
-   if(IsAddError(cBytes, cBytes - 1)) {
-      return Error_OutOfMemory;
-   }
-   cBytes = cBytes + cBytes - 1;
-
-   const size_t cBytesTreeNodeMulti = GetTreeNodeMultiSize(bHessian, cRuntimeScores);
-
-   if(IsMultiplyError(cBytesTreeNodeMulti, cBytes)) {
-      return Error_OutOfMemory;
-   }
-   cBytes *= cBytesTreeNodeMulti;
-
-   const size_t cBytesBest = cBytesTreeNodeMulti * (size_t{1} + (pTerm->GetCountRealDimensions() << 1));
-   EBM_ASSERT(cBytesBest <= cBytes);
-
-   // double it because we during the multi-dimensional sweep we need the best and we need the current
-   if(IsAddError(cBytesBest, cBytesBest)) {
-      return Error_OutOfMemory;
-   }
-   const size_t cBytesSweep = cBytesBest + cBytesBest;
-
-   cBytes = EbmMax(cBytes, cBytesSweep);
-
-   ErrorEbm error = pBoosterShell->ReserveTreeNodesTemp(cBytes);
-   if(Error_None != error) {
-      return error;
-   }
-
-   error = pBoosterShell->ReserveTemp1(cPossibleSplits * sizeof(unsigned char));
-   if(Error_None != error) {
-      return error;
-   }
-
-   unsigned char* pSplits = static_cast<unsigned char*>(pBoosterShell->GetTemp1());
+   unsigned char* pSplits = static_cast<unsigned char*>(pTemp1);
    unsigned char* aaSplits[k_cDimensionsMax];
    unsigned char** paSplits = aaSplits;
 
-   pcBins = acBins;
+   const size_t* pcBins = acBins;
+   const size_t* const acBinsEnd = acBins + cDimensions;
    do {
-      *paSplits = pSplits;
       const size_t cSplits = *pcBins - 1;
-      pSplits += cSplits;
-      ++paSplits;
+      if(0 != cSplits) {
+         *paSplits = pSplits;
+         pSplits += cSplits;
+         ++paSplits;
+      }
       ++pcBins;
    } while(acBinsEnd != pcBins);
 
@@ -1274,15 +1180,20 @@ extern ErrorEbm PartitionTwoDimensionalBoosting(BoosterShell* const pBoosterShel
    if(bHessian) {
       if(size_t{1} != cRuntimeScores) {
          // muticlass
-         error = PartitionTwoDimensionalBoostingTarget<true, k_cCompilerScoresStart>::Func(pBoosterShell,
+         error = PartitionTwoDimensionalBoostingTarget<true, k_cCompilerScoresStart>::Func(cRuntimeScores,
+               cDimensions,
+               cRealDimensions,
                flags,
-               pTerm,
                cSamplesLeafMin,
                hessianMin,
                regAlpha,
                regLambda,
                deltaStepMax,
+               aBinsBase,
                aAuxiliaryBinsBase,
+               pInnerTermUpdate,
+               pRootTreeNodeBase,
+               acBins,
                aTensorWeights,
                aTensorGrad,
                aTensorHess,
@@ -1291,19 +1202,25 @@ extern ErrorEbm PartitionTwoDimensionalBoosting(BoosterShell* const pBoosterShel
                aaSplits
 #ifndef NDEBUG
                ,
-               aDebugCopyBinsBase
+               aDebugCopyBinsBase,
+               pBinsEndDebug
 #endif // NDEBUG
          );
       } else {
-         error = PartitionTwoDimensionalBoostingInternal<true, k_oneScore>::Func(pBoosterShell,
+         error = PartitionTwoDimensionalBoostingInternal<true, k_oneScore>::Func(cRuntimeScores,
+               cDimensions,
+               cRealDimensions,
                flags,
-               pTerm,
                cSamplesLeafMin,
                hessianMin,
                regAlpha,
                regLambda,
                deltaStepMax,
+               aBinsBase,
                aAuxiliaryBinsBase,
+               pInnerTermUpdate,
+               pRootTreeNodeBase,
+               acBins,
                aTensorWeights,
                aTensorGrad,
                aTensorHess,
@@ -1312,22 +1229,28 @@ extern ErrorEbm PartitionTwoDimensionalBoosting(BoosterShell* const pBoosterShel
                aaSplits
 #ifndef NDEBUG
                ,
-               aDebugCopyBinsBase
+               aDebugCopyBinsBase,
+               pBinsEndDebug
 #endif // NDEBUG
          );
       }
    } else {
       if(size_t{1} != cRuntimeScores) {
          // Odd: gradient multiclass. Allow it, but do not optimize for it
-         error = PartitionTwoDimensionalBoostingInternal<false, k_dynamicScores>::Func(pBoosterShell,
+         error = PartitionTwoDimensionalBoostingInternal<false, k_dynamicScores>::Func(cRuntimeScores,
+               cDimensions,
+               cRealDimensions,
                flags,
-               pTerm,
                cSamplesLeafMin,
                hessianMin,
                regAlpha,
                regLambda,
                deltaStepMax,
+               aBinsBase,
                aAuxiliaryBinsBase,
+               pInnerTermUpdate,
+               pRootTreeNodeBase,
+               acBins,
                aTensorWeights,
                aTensorGrad,
                aTensorHess,
@@ -1336,19 +1259,25 @@ extern ErrorEbm PartitionTwoDimensionalBoosting(BoosterShell* const pBoosterShel
                aaSplits
 #ifndef NDEBUG
                ,
-               aDebugCopyBinsBase
+               aDebugCopyBinsBase,
+               pBinsEndDebug
 #endif // NDEBUG
          );
       } else {
-         error = PartitionTwoDimensionalBoostingInternal<false, k_oneScore>::Func(pBoosterShell,
+         error = PartitionTwoDimensionalBoostingInternal<false, k_oneScore>::Func(cRuntimeScores,
+               cDimensions,
+               cRealDimensions,
                flags,
-               pTerm,
                cSamplesLeafMin,
                hessianMin,
                regAlpha,
                regLambda,
                deltaStepMax,
+               aBinsBase,
                aAuxiliaryBinsBase,
+               pInnerTermUpdate,
+               pRootTreeNodeBase,
+               acBins,
                aTensorWeights,
                aTensorGrad,
                aTensorHess,
@@ -1357,7 +1286,8 @@ extern ErrorEbm PartitionTwoDimensionalBoosting(BoosterShell* const pBoosterShel
                aaSplits
 #ifndef NDEBUG
                ,
-               aDebugCopyBinsBase
+               aDebugCopyBinsBase,
+               pBinsEndDebug
 #endif // NDEBUG
          );
       }

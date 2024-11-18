@@ -1521,6 +1521,8 @@ class EBMModel(BaseEstimator):
 
         check_is_fitted(self, "has_fitted_")
 
+        print("Utilizando librería modificada de interpret")  
+
         # Obtain min/max for model scores
         lower_bound = np.inf
         upper_bound = -np.inf

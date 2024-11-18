@@ -28,6 +28,7 @@
 #include "Term.hpp"
 #include "InnerBag.hpp"
 #include "Tensor.hpp"
+#include "TreeNode.hpp"
 #include "BoosterCore.hpp"
 #include "BoosterShell.hpp"
 
@@ -91,23 +92,31 @@ extern ErrorEbm PartitionOneDimensionalBoosting(RandomDeterministic* const pRng,
       const FloatMain weightTotal,
       double* const pTotalGain);
 
-extern ErrorEbm PartitionTwoDimensionalBoosting(BoosterShell* const pBoosterShell,
+extern ErrorEbm PartitionTwoDimensionalBoosting(const bool bHessian,
+      const size_t cRuntimeScores,
+      const size_t cDimensions,
+      const size_t cRealDimensions,
       const TermBoostFlags flags,
-      const Term* const pTerm,
-      const size_t* const acBins,
       const size_t cSamplesLeafMin,
       const FloatCalc hessianMin,
       const FloatCalc regAlpha,
       const FloatCalc regLambda,
       const FloatCalc deltaStepMax,
-      BinBase* aAuxiliaryBinsBase,
+      const BinBase* const aBinsBase,
+      BinBase* const aAuxiliaryBinsBase,
+      Tensor* const pInnerTermUpdate,
+      void* const pRootTreeNodeBase,
+      const size_t* const acBins,
       double* const aTensorWeights,
       double* const aTensorGrad,
       double* const aTensorHess,
-      double* const pTotalGain
+      double* const pTotalGain,
+      const size_t cPossibleSplits,
+      void* const pTemp1
 #ifndef NDEBUG
       ,
-      const BinBase* const aDebugCopyBinsBase
+      const BinBase* const aDebugCopyBinsBase,
+      const BinBase* const pBinsEndDebug
 #endif // NDEBUG
 );
 
@@ -321,10 +330,12 @@ static ErrorEbm BoostMultiDimensional(BoosterShell* const pBoosterShell,
 #endif // NDEBUG
    );
 
+   const bool bHessian = pBoosterCore->IsHessian();
+
    double* aWeights = nullptr;
    double* pGradient = nullptr;
    double* pHessian = nullptr;
-   if(0 != (TermBoostFlags_PurifyUpdate & flags)) {
+   if(0 != ((TermBoostFlags_PurifyUpdate | TermBoostFlags_PurifyGain) & flags)) {
       // allocate the biggest tensor that is possible to split into
 
       // TODO: cache this memory allocation so that we don't do it each time
@@ -333,7 +344,6 @@ static ErrorEbm BoostMultiDimensional(BoosterShell* const pBoosterShell,
          return Error_OutOfMemory;
       }
       size_t cItems = 1 + cScores;
-      const bool bHessian = pBoosterCore->IsHessian();
       const bool bUseLogitBoost = bHessian && !(TermBoostFlags_DisableNewtonGain & flags);
       if(bUseLogitBoost) {
          if(IsAddError(cScores, cItems)) {
@@ -345,29 +355,120 @@ static ErrorEbm BoostMultiDimensional(BoosterShell* const pBoosterShell,
          return Error_OutOfMemory;
       }
       aWeights = static_cast<double*>(malloc(sizeof(double) * cItems * cTensorBins));
+      if(nullptr == aWeights) {
+         return Error_OutOfMemory;
+      }
       pGradient = aWeights + cTensorBins;
       if(bUseLogitBoost) {
          pHessian = pGradient + cTensorBins * cScores;
       }
    }
 
-   error = PartitionTwoDimensionalBoosting(pBoosterShell,
+   const size_t cRuntimeScores = pBoosterCore->GetCountScores();
+   const size_t cRealDimensions = pTerm->GetCountRealDimensions();
+   size_t cPossibleSplits;
+   size_t acBins2[k_cDimensionsMax];
+   {
+      if(IsOverflowBinSize<FloatMain, UIntMain>(true, true, bHessian, cRuntimeScores)) {
+         // TODO: move this to init
+         return Error_OutOfMemory;
+      }
+
+      if(IsOverflowTreeNodeMultiSize(bHessian, cRuntimeScores)) {
+         // TODO: move this to init
+         return Error_OutOfMemory;
+      }
+
+      cPossibleSplits = 0;
+
+      size_t cBytes = 1;
+
+      size_t* pcBins2 = acBins2;
+
+      pTermFeature = pTerm->GetTermFeatures();
+      do {
+         const FeatureBoosting* pFeature = pTermFeature->m_pFeature;
+         const size_t cBins = pFeature->GetCountBins();
+         EBM_ASSERT(size_t{1} <= cBins); // we don't boost on empty training sets
+         *pcBins2 = cBins;
+         const size_t cSplits = cBins - 1;
+         if(IsAddError(cPossibleSplits, cSplits)) {
+            return Error_OutOfMemory;
+         }
+         cPossibleSplits += cSplits;
+         if(IsMultiplyError(cBins, cBytes)) {
+            return Error_OutOfMemory;
+         }
+         cBytes *= cBins;
+         ++pcBins2;
+         ++pTermFeature;
+      } while(pTermFeaturesEnd != pTermFeature);
+
+      // For pairs, this calculates the exact max number of splits. For higher dimensions
+      // the max number of splits will be less, but it should be close enough.
+      // Each bin gets a tree node to record the gradient totals, and each split gets a TreeNode
+      // during construction. Each split contains a minimum of 1 bin on each side, so we have
+      // cBins - 1 potential splits.
+
+      if(IsAddError(cBytes, cBytes - 1)) {
+         return Error_OutOfMemory;
+      }
+      cBytes = cBytes + cBytes - 1;
+
+      const size_t cBytesTreeNodeMulti = GetTreeNodeMultiSize(bHessian, cRuntimeScores);
+
+      if(IsMultiplyError(cBytesTreeNodeMulti, cBytes)) {
+         return Error_OutOfMemory;
+      }
+      cBytes *= cBytesTreeNodeMulti;
+
+      const size_t cBytesBest = cBytesTreeNodeMulti * (size_t{1} + (cRealDimensions << 1));
+      EBM_ASSERT(cBytesBest <= cBytes);
+
+      // double it because we during the multi-dimensional sweep we need the best and we need the current
+      if(IsAddError(cBytesBest, cBytesBest)) {
+         return Error_OutOfMemory;
+      }
+      const size_t cBytesSweep = cBytesBest + cBytesBest;
+
+      cBytes = EbmMax(cBytes, cBytesSweep);
+
+      error = pBoosterShell->ReserveTreeNodesTemp(cBytes);
+      if(Error_None != error) {
+         return error;
+      }
+
+      error = pBoosterShell->ReserveTemp1(cPossibleSplits * sizeof(unsigned char));
+      if(Error_None != error) {
+         return error;
+      }
+   }
+
+   error = PartitionTwoDimensionalBoosting(bHessian,
+         cRuntimeScores,
+         pTerm->GetCountDimensions(),
+         cRealDimensions,
          flags,
-         pTerm,
-         acBins,
          cSamplesLeafMin,
          hessianMin,
          regAlpha,
          regLambda,
          deltaStepMax,
+         pBoosterShell->GetBoostingMainBins(),
          aAuxiliaryBins,
+         pBoosterShell->GetInnerTermUpdate(),
+         pBoosterShell->GetTreeNodeMultiTemp(),
+         acBins2,
          aWeights,
          pGradient,
          pHessian,
-         pTotalGain
+         pTotalGain,
+         cPossibleSplits,
+         pBoosterShell->GetTemp1()
 #ifndef NDEBUG
-         ,
-         aDebugCopyBins
+               ,
+         aDebugCopyBins,
+         pBoosterShell->GetDebugMainBinsEnd()
 #endif // NDEBUG
    );
    if(Error_None != error) {
@@ -383,7 +484,7 @@ static ErrorEbm BoostMultiDimensional(BoosterShell* const pBoosterShell,
    EBM_ASSERT(!std::isnan(*pTotalGain));
    EBM_ASSERT(0 <= *pTotalGain);
 
-   if(0 != (TermBoostFlags_PurifyUpdate & flags)) {
+   if(0 != (TermBoostFlags_PurifyUpdate & flags) && 0 == (TermBoostFlags_PurifyGain & flags)) {
       Tensor* const pTensor = pBoosterShell->GetInnerTermUpdate();
 
       size_t cDimensions = pTerm->GetCountDimensions();
@@ -452,7 +553,7 @@ static ErrorEbm BoostMultiDimensional(BoosterShell* const pBoosterShell,
                ++pHessian;
             }
             double update = *pScore;
-            gain += CalcPartialGainFromUpdate(grad, hess, -update, regAlpha, regLambda);
+            gain += CalcPartialGainFromUpdate<true>(grad, hess, -update, regAlpha, regLambda);
             ++pGradient;
             ++pScore;
          }
@@ -461,8 +562,9 @@ static ErrorEbm BoostMultiDimensional(BoosterShell* const pBoosterShell,
 
       if(/* NaN */ !(std::numeric_limits<double>::min() <= gain)) {
          // Purification can push the updates to a point where they are detrimental to the purified gain
-         // in which case gain can end up slightly negative. If this happens disallow the cuts so that we
-         // never have negative gain.
+         // in which case gain can end up slightly negative. If this happens, disallow the cuts so that we
+         // never have negative gain. For purified updates, if we make no cuts, then the update is zero
+         // so we don't have to call CalcNegUpdate.
 
          pTensor->Reset();
          gain = std::isnan(gain) ? gain : double{0};

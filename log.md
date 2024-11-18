@@ -1,23 +1,21 @@
 
 
-## 2024-11-15
+## 2024-11-18
 
 
 ### Summary of the Day
-- Total Hours Worked: 1.5
-- Main Objective: 'interpretml' clone to work with it locally. 
+- Total Hours Worked: 2.5
+- Main Objective: Use our 'interpretml' version. 
 
 ### Tasks Completed
-1. The library was succesfully cloned in the repository.
+1. Modify some part of the source code of the EBMs and verify that 'our' version of the library is working. In order to do that, I uninstalled the original interpretml library and installed it again (both interpret and interpret-core) pointing to our 'interpret' folder. I executed it in editable mode (pip install -e ...) so now every change in the source code will be instantly applied to the library.
 
 ### In-Progress
-Understanding of 'local_explain' function.
-Import "our" interpretml-custom library and use this one instead of the original.
+Understanding of 'explain_global' function.
+Modify the code of 'global_explain' and 'local_explain' and try other importances. This will allow us to visualize other models. 
 
 ### Next Steps for Tomorrow
-- Task 1: Import "our" library and ensure it is working correctly. 
+- Task 1: Modify the code of 'global_explain' and 'local_explain' and try other importances.
 
 ### Issues/Blockers
-- Problems/Confusions related to libraries, versions and names. When trying to use "our" library, I struggled trying to import it and use it. However, I don't think this will be a problem. I will inspect what is happening and how to fix it.
-
-
+- Still some problems with the library, specifically with 'libebm'. 'libebm' is a shared library that the EBM model needs, but it isn't in the github interpret repository, I think. I had to add a \root folder (which I found in the original interpret package folder in my PC) in the interpret-core folder. Now it is solved.
