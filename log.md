@@ -1,21 +1,21 @@
 
 
-## 2024-11-18
+## 2024-11-19
 
 
 ### Summary of the Day
-- Total Hours Worked: 2.5
-- Main Objective: Use our 'interpretml' version. 
+- Total Hours Worked: 2
+- Main Objective: Modify source code of 'EBMs' and control de visualizations. 
 
 ### Tasks Completed
-1. Modify some part of the source code of the EBMs and verify that 'our' version of the library is working. In order to do that, I uninstalled the original interpretml library and installed it again (both interpret and interpret-core) pointing to our 'interpret' folder. I executed it in editable mode (pip install -e ...) so now every change in the source code will be instantly applied to the library.
+1. Understanding of global and local explain function.
+1. Modify feature contributions (both in global and local explain function), so now it shows constant weights for each feature. This will allow us to use this graphical tools to visualize Naive Bayes contributions.
 
 ### In-Progress
-Understanding of 'explain_global' function.
-Modify the code of 'global_explain' and 'local_explain' and try other importances. This will allow us to visualize other models. 
+- Naive Bayes feature contribution visualization.
 
 ### Next Steps for Tomorrow
-- Task 1: Modify the code of 'global_explain' and 'local_explain' and try other importances.
+- Task 1: Naive Bayes understanding and thinking how to integrate it.
 
 ### Issues/Blockers
-- Still some problems with the library, specifically with 'libebm'. 'libebm' is a shared library that the EBM model needs, but it isn't in the github interpret repository, I think. I had to add a \root folder (which I found in the original interpret package folder in my PC) in the interpret-core folder. Now it is solved.
+- No big problems today. With the control of the library, if I have an issue I can execute a print and see what is happening.
