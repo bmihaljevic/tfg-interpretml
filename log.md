@@ -1,21 +1,21 @@
 
 
-## 2024-11-19
+## 2024-11-20 and 2024-11-21
 
 
 ### Summary of the Day
-- Total Hours Worked: 2
-- Main Objective: Modify source code of 'EBMs' and control de visualizations. 
+- Total Hours Worked: 3
+- Main Objective: Naive Bayes Understanding and Data Understanding for Autoimmune Disease ML Challenge (Clara's project) 
 
 ### Tasks Completed
-1. Understanding of global and local explain function.
-1. Modify feature contributions (both in global and local explain function), so now it shows constant weights for each feature. This will allow us to use this graphical tools to visualize Naive Bayes contributions.
+1. Understanding of Naive Bayes
+2. Comprehension of ML Challenge Data
 
 ### In-Progress
-- Naive Bayes feature contribution visualization.
+- Naive Bayes Implementation and Visualization
 
 ### Next Steps for Tomorrow
-- Task 1: Naive Bayes understanding and thinking how to integrate it.
+- To be said in the meeting.
 
 ### Issues/Blockers
-- No big problems today. With the control of the library, if I have an issue I can execute a print and see what is happening.
+- 
