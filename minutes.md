@@ -18,9 +18,11 @@
 |------|--------|------------|---------|
 | Understand both visualization functions | Completed | 2h |  |
 | Clone interpret repo and use it | Completed | 2.5h | Struggled a bit trying to use our interpret folder as a library |
-| Modify _ebm.py | In progress | 1.5h | By modifying the code it was easier to understand what the internal variables were doing. Set constant contributions and visualized it. |
-| Naive Bayes Understanding | In progress | 1h | Tried to understand how to integrate Naive Bayes with this visualization functions |
+| Modify _ebm.py | Completed | 1.5h | By modifying the code it was easier to understand what the internal variables were doing. Set constant contributions and visualized it. |
+| Naive Bayes Understanding | Completed | 1h | Tried to understand how to integrate Naive Bayes with this visualization functions |
+| Naive Bayes Implementation | In progress | 2h | Created _naivebayes.py and started to program it |
 | Autoimmune Disease ML Challenge - Data Understanding | Completed | 2h | Visualized and understood how the data is organized |
+| Autoimmune Disease ML Challenge - Features extraction notebook | Completed | 1.5h | Created an initialization notebook that gets the features of the cell |
 
 ### 3. Challenges/Issues
   **Issue 1**: Difficulty modifying and using the source code of the InterpretML library

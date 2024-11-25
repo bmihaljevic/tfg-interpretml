@@ -1,21 +1,21 @@
 
 
-## 2024-11-20 and 2024-11-21
-
+## 2024-11-25
 
 ### Summary of the Day
-- Total Hours Worked: 3
-- Main Objective: Naive Bayes Understanding and Data Understanding for Autoimmune Disease ML Challenge (Clara's project) 
+- Total Hours Worked: 2
+- Main Objective: Understanding the structure of a model file (based on _linear.py), in order to create _naivebayes.py, and start doing the model. 
 
 ### Tasks Completed
-1. Understanding of Naive Bayes
-2. Comprehension of ML Challenge Data
+1. Understood _linear.py and internal associated functions.
+2. Started programming on _naivebayes.py based on _linear.py and reached to explain_local function.
+3. Understood which parameters are necessary to create conditional probabilities for NB. 
 
 ### In-Progress
-- Naive Bayes Implementation and Visualization
+- Naive Bayes Implementation and Visualization for Binary Classification.
 
 ### Next Steps for Tomorrow
-- To be said in the meeting.
+- Keep going on _naivebayes.py, creating the conditional probabilities function and visualize local explanations.
 
 ### Issues/Blockers
-- 
+- As I was looking at _linear.py model to create _naivebayes.py, I had no problem understanding the code (except some of the internal functions) because it's the simplest model they have.
