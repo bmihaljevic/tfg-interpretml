@@ -34,8 +34,8 @@
 - [Discussion points raised during the meeting]
 
 ### 5. Goals for Next Week
-- **Goal 1:** [Description of goal or task for the following week]
-- **Goal 2:** [Description of goal or task for the following week]
+- **Goal 1:** Problems on missing data on Gaussian Naive Bayes of Scikit Learn
+- **Goal 2:** Understand how to make a package installable with pip
 
 ### 6. Action Items
 | Action Item | Due Date |
