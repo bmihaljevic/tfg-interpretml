@@ -1,16 +1,13 @@
 
 
-## 2024-12-02
+## 2024-12-03
 
 ### Summary of the Day
-- Total Hours Worked: 2
-- Main Objective: Understand and investigate about the three topics mentioned in the meeting.
+- Total Hours Worked: 1.5
+- Main Objective: Understanding of Discriminant Analysis (linear and quadratic).
 
 ### Tasks Completed
-1. Proved that GaussianNB from sklearn can't handle missing data.
-2. Understood that Naive Bayes should handle missing data without problem, because it can be ignored.
-3. Investigate about the uploading of a package to the PyPi repository. 
-4. Started reading about Discriminant Analysis.
+1. Read documentation about LDA and QDA
 
 ### In-Progress
 - Naive Bayes Implementation and Visualization for Binary Classification.
@@ -20,6 +17,7 @@
 ### Next Steps for Tomorrow
 - Look further into Discriminant Analysis.
 - Create a notebook using DA using and understanding its internal parameters.
+- Think about feature contribution in Discriminant Analysis.
 
 ### Issues/Blockers
 -
