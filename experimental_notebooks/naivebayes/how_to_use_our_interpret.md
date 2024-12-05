@@ -16,7 +16,7 @@ pip install -e .\interpret\python\interpret-core\
 
 **`pip install -e <path>`** instala la librería desde el directorio especificado en modo **editable**. Cualquier cambio que realices en los archivos se reflejará automáticamente en su uso sin necesidad de reinstalarla.
 
-IMPORTANTE: Para que los cambios se vean reflejados durante el uso de un Python notebook (.ipynb), se debe hacer un Restart del notebook.
+IMPORTANTE: Si se hacen cambios en la librería durante la ejecución de un Python notebook (.ipynb), se debe hacer un Restart del notebook para que estos cambios se vean reflejados.
 
 ### Compatibilidad con la versión original
 
