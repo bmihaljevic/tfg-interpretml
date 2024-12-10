@@ -1566,12 +1566,12 @@ class EBMModel(BaseEstimator):
         density_list = []
         keep_idxs = []
         for term_idx, feature_idxs in enumerate(self.term_features_):
-            # model_graph = mod_term_scores[term_idx]
+            model_graph = mod_term_scores[term_idx]
 
             # MODIFICATION: Constant model graph with the first value of the term scores
-            length = len(mod_term_scores[term_idx])
-            model_graph = [mod_term_scores[term_idx][0]] * length
-            model_graph = np.array(model_graph)
+            # length = len(mod_term_scores[term_idx])
+            # model_graph = [mod_term_scores[term_idx][0]] * length
+            # model_graph = np.array(model_graph)
 
             # NOTE: This uses stddev. for bounds, consider issue warnings.
             errors = mod_standard_deviations[term_idx]
@@ -1881,9 +1881,9 @@ class EBMModel(BaseEstimator):
                 data_dict = {
                     "type": "univariate",
                     "names": list(self.term_names_),
-                    # "scores": list(sample_scores),
+                    "scores": list(sample_scores),
                     # constant scores for all terms
-                    "scores": np.array([sample_scores[0]] * len(sample_scores)),
+                    # "scores": np.array([sample_scores[0]] * len(sample_scores)),
                     "values": values,
                     "extra": {
                         "names": ["Intercept"],
