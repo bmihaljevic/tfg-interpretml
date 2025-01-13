@@ -1,4 +1,26 @@
+## 2025-01-13
 
+### Summary of the Day
+- Total Hours Worked: 2.5
+- Main Objective: Start creating Categorical Naive Bayes file
+
+### Tasks Completed
+1. Re-read and understand how a model and its explanations are coded in a file.
+2. Create the file for Categorical Naive Bayes (maybe not necessary).
+3. Understand how conditional probabilities work in CategoricalNB
+
+### In-Progress
+- Gaussian Naive Bayes Global Explanation Visualization.
+- Categorical Naive Bayes Global and Local Explanation Visualization.
+
+### Next Steps for Tomorrow
+- Complete Local Explanation of Categorical Naive Bayes
+- Look further into NAMs.
+
+### Issues/Blockers
+- Possibility of combining Gaussian NB and Categorical NB in the same file.
+
+---
 
 ## 2024-12-09 and 2024-12-10
 
