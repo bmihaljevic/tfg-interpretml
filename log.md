@@ -1,3 +1,29 @@
+## 2025-01-14
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Create conditional probabilities for Categorical NB
+
+### Tasks Completed
+1. Understand how conditional probabilities work in CategoricalNB
+2. Investigate the option of bayesian estimation (alpha in the formula)
+3. Investigate about the problem of applying categorial NB to continuous features
+
+### In-Progress
+- Gaussian Naive Bayes Global Explanation Visualization.
+- Categorical Naive Bayes Global and Local Explanation Visualization.
+
+### Next Steps for Tomorrow
+- Complete Local Explanation of Categorical Naive Bayes
+- Look further into NAMs.
+
+### Issues/Blockers
+- Possibility of combining Gaussian NB and Categorical NB in the same file.
+- Problem with categorical NB to continuous features.
+
+---
+
+
 ## 2025-01-13
 
 ### Summary of the Day

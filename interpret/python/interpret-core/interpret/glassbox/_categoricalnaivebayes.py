@@ -177,14 +177,18 @@ class BaseNaiveBayes:
         is_classification = is_classifier(model)
 
        # Here starts our modifications (for binary classification)
-        def conditional_probabilities(model, X):
-            # TODO
-            pass
+        def conditional_probabilities(model, X, alpha):
+            cp_0 = np.zeros(X.shape[0])
+            cp_1 = np.zeros(X.shape[0])
+            for j in range(X.shape[0]):
+                cp_0[j] = (model.category_count_[j][0][int(X[j])] + alpha) / (model.class_count_[0] + alpha * model.category_count_[j].shape[1])
+                cp_1[j] = (model.category_count_[j][1][int(X[j])] + alpha) / (model.class_count_[1] + alpha * model.category_count_[j].shape[1])
+            return cp_0, cp_1
 
-        # class_0_prior = model.class_prior_[0]
-        # class_1_prior = model.class_prior_[1]
+        class_0_prior = model.class_count_[0] / model.class_count_.sum()
+        class_1_prior = model.class_count_[1] / model.class_count_.sum()
         predictions = self.predict_proba(X)
-        # intercept = np.log(class_0_prior / class_1_prior)
+        intercept = np.log(class_0_prior / class_1_prior)
         intercept = 0
 
         data_dicts = []
@@ -192,7 +196,7 @@ class BaseNaiveBayes:
         perf_list = []
         perf_dicts = gen_perf_dicts(predictions, y, is_classification, classes)
         for i, instance in enumerate(X):
-            c0_cp, c1_cp = conditional_probabilities(model, instance)
+            c0_cp, c1_cp = conditional_probabilities(model, instance, 1)
             scores = np.log(c0_cp / c1_cp)
             print("Instance", i)
             print(c0_cp, c1_cp)

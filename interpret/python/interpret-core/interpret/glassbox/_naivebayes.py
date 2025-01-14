@@ -197,10 +197,6 @@ class BaseNaiveBayes:
         for i, instance in enumerate(X):
             c0_cp, c1_cp = conditional_probabilities(model, instance)
             scores = np.log(c0_cp / c1_cp)
-            print("Instance", i)
-            print(c0_cp, c1_cp)
-            print(scores)
-            print()
             scores_list.append(scores)
             data_dict = {}
             data_dict["data_type"] = "univariate"
