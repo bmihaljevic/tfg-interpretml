@@ -189,7 +189,6 @@ class BaseNaiveBayes:
         class_1_prior = model.class_count_[1] / model.class_count_.sum()
         predictions = self.predict_proba(X)
         intercept = np.log(class_0_prior / class_1_prior)
-        intercept = 0
 
         data_dicts = []
         scores_list = []
@@ -199,6 +198,7 @@ class BaseNaiveBayes:
             c0_cp, c1_cp = conditional_probabilities(model, instance, 1)
             scores = np.log(c0_cp / c1_cp)
             print("Instance", i)
+            print(intercept)
             print(c0_cp, c1_cp)
             print(scores)
             print()

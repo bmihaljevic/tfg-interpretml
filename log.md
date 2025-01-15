@@ -1,3 +1,28 @@
+## 2025-01-15
+
+### Summary of the Day
+- Total Hours Worked: 2.5
+- Main Objective: Try Categorical NB on a dataset and read NAMs code.
+
+### Tasks Completed
+1. Use Iris dataset with a discretization to try Categorical NB.
+2. Read NAMs code and understand how it works.
+
+### In-Progress
+- Gaussian Naive Bayes Global Explanation Visualization.
+- Categorical Naive Bayes Global Explanation Visualization.
+- NAMs understanding and experiments.
+
+### Next Steps for Tomorrow
+- Keep investigating about NAMs code and try it on datasets.
+
+### Issues/Blockers
+- Possibility of combining Gaussian NB and Categorical NB in the same file.
+- Problem with categorical NB to continuous features.
+
+---
+
+
 ## 2025-01-14
 
 ### Summary of the Day
