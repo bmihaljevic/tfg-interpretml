@@ -181,8 +181,8 @@ class BaseNaiveBayes:
             cp_0 = np.zeros(X.shape[0])
             cp_1 = np.zeros(X.shape[0])
             for j in range(X.shape[0]):
-                cp_0[j] = (model.category_count_[j][0][int(X[j])] + alpha) / (model.class_count_[0] + alpha * model.category_count_[j].shape[1])
-                cp_1[j] = (model.category_count_[j][1][int(X[j])] + alpha) / (model.class_count_[1] + alpha * model.category_count_[j].shape[1])
+                cp_0[j] = np.exp(model.feature_log_prob_[j][0][int(X[j])])
+                cp_1[j] = np.exp(model.feature_log_prob_[j][1][int(X[j])])
             return cp_0, cp_1
 
         class_0_prior = model.class_count_[0] / model.class_count_.sum()
