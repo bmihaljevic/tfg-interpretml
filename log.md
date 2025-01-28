@@ -1,3 +1,30 @@
+## 2025-01-28
+
+### Summary of the Day
+- Total Hours Worked: 2.5
+- Main Objective: Add an example using Categorical NB and try NAM wrapper
+
+### Tasks Completed
+1. Use Iris dataset with a discretization to try the updated Categorical NB.
+2. Use NAM wrapper (https://github.com/lemeln/nam) on two datasets
+
+### In-Progress
+- Gaussian Naive Bayes Global Explanation Visualization.
+- Categorical Naive Bayes Global Explanation Visualization.
+- Discriminant Analysis integration on InterpretML
+- NAMs understanding and experiments.
+
+### Next Steps for Tomorrow
+- Keep investigating about NAMs code and try it on datasets.
+- Start creating Discriminant Analysis files
+
+### Issues/Blockers
+- Possibility of combining Gaussian NB and Categorical NB in the same file.
+- Lots of problems with versions when installing NAM wrapper. Had to create a new virtual environment to avoid this problem and it finally worked.
+
+---
+
+
 ## 2025-01-15
 
 ### Summary of the Day
