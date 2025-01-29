@@ -1,3 +1,31 @@
+## 2025-01-29
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Start integrating Discriminant Analysis
+
+### Tasks Completed
+1. Integrate local explanation of LDA
+2. Try local explanation on Iris dataset 
+3. Keep investigating on NAMs example
+
+### In-Progress
+- Gaussian Naive Bayes Global Explanation Visualization.
+- Categorical Naive Bayes Global Explanation Visualization.
+- Discriminant Analysis integration on InterpretML
+- NAMs understanding and experiments.
+
+### Next Steps for Tomorrow
+- Integrate local and global explanations of LDA
+- Integrate local and global explanations of QDA
+
+### Issues/Blockers
+- Some problems understanding how features contribute on Discriminant Analysis.
+- Possibility of combining Gaussian NB and Categorical NB in the same file.
+- Lots of problems with versions when installing NAM wrapper. Had to create a new virtual environment to avoid this problem and it finally worked.
+
+---
+
 ## 2025-01-28
 
 ### Summary of the Day
