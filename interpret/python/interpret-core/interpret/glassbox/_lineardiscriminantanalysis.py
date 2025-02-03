@@ -22,7 +22,7 @@ class BaseLinearDiscriminantAnalysis:
     Base class for Linear Discriminant Analysis interpretable model.
     """
 
-    available_explanations = ["local"]
+    available_explanations = ["local", "global"]
     explainer_type = "model"
 
     def __init__(
@@ -243,6 +243,82 @@ class BaseLinearDiscriminantAnalysis:
             feature_types=self.feature_types_in_,
             name=name,
             selector=selector,
+        )
+    
+    def explain_global(self, name=None):
+        """Provides global explanation for model.
+
+        Args:
+            name: User-defined explanation name.
+
+        Returns:
+            An explanation object,
+            visualizing feature-value pairs as horizontal bar chart.
+        """
+
+        check_is_fitted(self, "has_fitted_")
+
+        if name is None:
+            name = gen_name_from_class(self)
+
+        model = self._model()
+        if is_classifier(self):
+            intercept = model.intercept_[0]
+            coef = model.coef_[0]
+        else:
+            intercept = model.intercept_
+            coef = model.coef_
+
+        overall_data_dict = {
+            "names": self.feature_names_in_,
+            "scores": list(coef),
+            "extra": {"names": ["Intercept"], "scores": [intercept]},
+        }
+
+        specific_data_dicts = []
+        for index, _feature in enumerate(self.feature_names_in_):
+            feat_min = self.X_mins_[index]
+            feat_max = self.X_maxs_[index]
+            feat_coef = coef[index]
+
+            feat_type = self.feature_types_in_[index]
+
+            if feat_type == "continuous":
+                # Generate x, y points to plot from coef for continuous features
+                grid_points = np.linspace(feat_min, feat_max, 30)
+            else:
+                grid_points = np.array(self.categorical_uniq_[index])
+
+            y_scores = feat_coef * grid_points
+
+            data_dict = {
+                "names": grid_points,
+                "scores": y_scores,
+                "density": {
+                    "scores": self.bin_counts_[index],
+                    "names": self.bin_edges_[index],
+                },
+            }
+
+            specific_data_dicts.append(data_dict)
+
+        internal_obj = {
+            "overall": overall_data_dict,
+            "specific": specific_data_dicts,
+            "mli": [
+                {
+                    "explanation_type": "global_feature_importance",
+                    "value": {"scores": list(coef), "intercept": intercept},
+                }
+            ],
+        }
+        return LinearDiscriminantAnalysisExplanation(
+            "global",
+            internal_obj,
+            feature_names=self.feature_names_in_,
+            feature_types=self.feature_types_in_,
+            name=name,
+            selector=self.global_selector_,
         )
 
 class LinearDiscriminantAnalysisExplanation(FeatureValueExplanation):

@@ -1,3 +1,85 @@
+## 2025-02-03
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Read and understand Multiclass GAM article (https://arxiv.org/pdf/1810.09092)
+
+### Tasks Completed
+1. Read the article introducing Multiclass GAM
+2. Understand API (Additive Post-Processing for Interpretability) and how it improves interpretability.
+
+### In-Progress
+- Gaussian Naive Bayes Global Explanation Visualization.
+- Categorical Naive Bayes Global Explanation Visualization.
+- Discriminant Analysis integration on InterpretML
+- NAMs understanding and experiments.
+
+### Next Steps for Tomorrow
+- Look further into NAMs code
+- Integrate local and global explanations of QDA
+
+### Issues/Blockers
+- Some problems understanding how features contribute on Discriminant Analysis.
+- Possibility of combining Gaussian NB and Categorical NB in the same file.
+- Lots of problems with versions when installing NAM wrapper. Had to create a new virtual environment to avoid this problem and it finally worked.
+
+---
+
+## 2025-01-31
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Investigate about QDA and start "Memoria TFG"
+
+### Tasks Completed
+1. Organized "Memoria TFG" by sections and start Introduction
+2. Investigate how QDA features contribute to the prediction
+
+### In-Progress
+- Gaussian Naive Bayes Global Explanation Visualization.
+- Categorical Naive Bayes Global Explanation Visualization.
+- Discriminant Analysis integration on InterpretML
+- NAMs understanding and experiments.
+
+### Next Steps for Tomorrow
+- Read Multiclass GAM article
+- Integrate local and global explanations of QDA
+
+### Issues/Blockers
+- Problems understanding how features contribute on QDA.
+- Possibility of combining Gaussian NB and Categorical NB in the same file.
+- Lots of problems with versions when installing NAM wrapper. Had to create a new virtual environment to avoid this problem and it finally worked.
+
+---
+
+## 2025-01-30
+
+### Summary of the Day
+- Total Hours Worked: 2.5
+- Main Objective: Finish LDA integration and start QDA
+
+### Tasks Completed
+1. Integrate local explanation of LDA
+2. Try local explanation on Iris dataset 
+3. Integrate local explanation of LDA
+
+### In-Progress
+- Gaussian Naive Bayes Global Explanation Visualization.
+- Categorical Naive Bayes Global Explanation Visualization.
+- Discriminant Analysis integration on InterpretML
+- NAMs understanding and experiments.
+
+### Next Steps for Tomorrow
+- Integrate local and global explanations of QDA
+- Start "Memoria TFG"
+
+### Issues/Blockers
+- Some problems understanding how features contribute on Discriminant Analysis.
+- Possibility of combining Gaussian NB and Categorical NB in the same file.
+- Lots of problems with versions when installing NAM wrapper. Had to create a new virtual environment to avoid this problem and it finally worked.
+
+---
+
 ## 2025-01-29
 
 ### Summary of the Day
