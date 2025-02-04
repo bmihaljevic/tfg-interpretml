@@ -1,3 +1,31 @@
+## 2025-02-04
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Dive deeper into NAMs architecture
+
+### Tasks Completed
+1. Study the code of the NAM wrapper and plot function
+2. Try plot function of the model
+   
+### In-Progress
+- Gaussian Naive Bayes Global Explanation Visualization.
+- Categorical Naive Bayes Global Explanation Visualization.
+- Discriminant Analysis integration on InterpretML
+- NAMs understanding and experiments.
+
+### Next Steps for Tomorrow
+- Look further into NAMs code
+- Integrate local and global explanations of QDA
+
+### Issues/Blockers
+- Plot function of NAMs model is unfinished (?), maybe have to clone and modify it.
+- Problems understanding how features contribute on QDA.
+- Possibility of combining Gaussian NB and Categorical NB in the same file.
+- Lots of problems with versions when installing NAM wrapper. Had to create a new virtual environment to avoid this problem and it finally worked.
+
+---
+
 ## 2025-02-03
 
 ### Summary of the Day
@@ -19,7 +47,7 @@
 - Integrate local and global explanations of QDA
 
 ### Issues/Blockers
-- Some problems understanding how features contribute on Discriminant Analysis.
+- Problems understanding how features contribute on QDA.
 - Possibility of combining Gaussian NB and Categorical NB in the same file.
 - Lots of problems with versions when installing NAM wrapper. Had to create a new virtual environment to avoid this problem and it finally worked.
 
