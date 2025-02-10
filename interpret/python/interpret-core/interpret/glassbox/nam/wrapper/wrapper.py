@@ -190,7 +190,7 @@ class NAMBase:
             if self.num_tasks == 1:
                 fnns_out = fnns_out.unsqueeze(dim=1)
             # (examples, tasks)
-            feature_outputs.append(fnns_out[:, :, feature_index].detach().cpu().numpy())
+            feature_outputs.append(fnns_out[:, :, :, feature_index].detach().cpu().numpy())
 
         # (learners, examples, tasks)
         feature_outputs = np.stack(feature_outputs, axis=0)

@@ -1,3 +1,28 @@
+## 2025-02-10
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Modify NAM wrapper to achieve feature contribution visualization
+
+### Tasks Completed
+1. Study the code of the NAM wrapper and modify plot function
+2. Feature contributions of NAMs can be visualized
+3. Reorganise and continue TFG Memory 
+
+### In-Progress
+- Gaussian Naive Bayes Global Explanation Visualization.
+- Categorical Naive Bayes Global Explanation Visualization.
+- NAMs understanding and experiments.
+
+### Next Steps for Tomorrow
+- Look further into NAMs code
+- Continue TFG memory
+
+### Issues/Blockers
+- Possibility of combining Gaussian NB and Categorical NB in the same file.
+
+---
+
 ## 2025-02-04
 
 ### Summary of the Day
