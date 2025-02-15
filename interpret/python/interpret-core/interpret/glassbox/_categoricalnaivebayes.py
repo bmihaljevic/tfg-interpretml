@@ -87,8 +87,7 @@ class BaseNaiveBayes:
         self.categorical_uniq_ = {}
 
         for i, feature_type in enumerate(self.feature_types_in_):
-            if feature_type in ("nominal", "ordinal"):
-                self.categorical_uniq_[i] = sorted(set(X[:, i]))
+            self.categorical_uniq_[i] = sorted(set(X[:, i]))
 
         unique_val_counts = np.zeros(len(self.feature_names_in_), dtype=np.int64)
         for col_idx in range(len(self.feature_names_in_)):
@@ -96,7 +95,7 @@ class BaseNaiveBayes:
             unique_val_counts[col_idx] = len(np.unique(X_col))
 
         # to use in the global explanation
-        self.global_selector = gen_global_selector(
+        self.global_selector_ = gen_global_selector(
             len(self.feature_names_in_),
             self.feature_names_in_,
             self.feature_types_in_,
@@ -274,34 +273,20 @@ class BaseNaiveBayes:
             name = gen_name_from_class(self)
 
         model = self._model()
-        if is_classifier(self):
-            intercept = model.intercept_[0]
-            # coef = model.coef_[0]
-        else:
-            intercept = model.intercept_
-            coef = model.coef_
 
-        overall_data_dict = {
-            "names": self.feature_names_in_,
-            "scores": list(coef),
-            "extra": {"names": ["Intercept"], "scores": [intercept]},
-        }
+        def get_ratio(model, value, index):
+            cp_0 = np.exp(model.feature_log_prob_[index][0][int(value)])
+            cp_1 = np.exp(model.feature_log_prob_[index][1][int(value)])
+            return np.log(cp_0 / cp_1)
 
         specific_data_dicts = []
         for index, _feature in enumerate(self.feature_names_in_):
-            feat_min = self.X_mins_[index]
-            feat_max = self.X_maxs_[index]
-            feat_coef = coef[index]
+            grid_points = np.array(self.categorical_uniq_[index])
 
-            feat_type = self.feature_types_in_[index]
+            y_scores = []
 
-            if feat_type == "continuous":
-                # Generate x, y points to plot from coef for continuous features
-                grid_points = np.linspace(feat_min, feat_max, 30)
-            else:
-                grid_points = np.array(self.categorical_uniq_[index])
-
-            y_scores = feat_coef * grid_points
+            for x in grid_points:
+                y_scores.append(get_ratio(model, x, index))
 
             data_dict = {
                 "names": grid_points,
@@ -313,6 +298,12 @@ class BaseNaiveBayes:
             }
 
             specific_data_dicts.append(data_dict)
+        
+        overall_data_dict = {
+            "names": self.feature_names_in_,
+            "scores": list(y_scores),
+            "extra": {"names": ["Intercept"], "scores": [1]},
+        }
 
         internal_obj = {
             "overall": overall_data_dict,
@@ -320,7 +311,7 @@ class BaseNaiveBayes:
             "mli": [
                 {
                     "explanation_type": "global_feature_importance",
-                    "value": {"scores": list(coef), "intercept": intercept},
+                    "value": {"scores": list(y_scores), "intercept": 1},
                 }
             ],
         }
