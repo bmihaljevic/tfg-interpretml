@@ -17,6 +17,20 @@ from nam.models.saver import Checkpointer
 from nam.trainer import Trainer
 from nam.trainer.losses import make_penalized_loss_func
 
+from sklearn.base import ClassifierMixin, is_classifier
+from sklearn.utils.validation import check_is_fitted
+from ....api.base import ExplainerMixin
+from ....api.templates import FeatureValueExplanation
+from ....utils._clean_simple import clean_dimensions, typify_classification
+from ....utils._clean_x import preclean_X
+from ....utils._explanation import (
+    gen_global_selector,
+    gen_local_selector,
+    gen_name_from_class,
+    gen_perf_dicts,
+)
+from ....utils._unify_data import unify_data
+
 class NAMBase:
     def __init__(
         self,
@@ -113,6 +127,31 @@ class NAMBase:
         if not self.warm_start or not self._fitted:
             self._initialize_models(X, y)
 
+        #### TO MODIFY
+        self.X_mins_ = np.min(X, axis=0)
+        self.X_maxs_ = np.max(X, axis=0)
+
+        self.feature_names_in_ = ['pregnancies', 'glucose', 'diastolic', 
+                            'triceps', 'insulin', 'bmi', 'dpf', 'age']
+        self.feature_types_in_ = ['continuous', 'continuous', 'continuous',
+                            'continuous', 'continuous', 'continuous', 'continuous', 'continuous']
+        
+        unique_val_counts = np.zeros(len(self.feature_names_in_), dtype=np.int64)
+        for col_idx in range(len(self.feature_names_in_)):
+            X_col = X[:, col_idx]
+            unique_val_counts[col_idx] = len(np.unique(X_col))
+
+        # to use in the global explanation
+        self.global_selector_ = gen_global_selector(
+            len(self.feature_names_in_),
+            self.feature_names_in_,
+            self.feature_types_in_,
+            unique_val_counts,
+            None,
+        )
+        self.bin_counts_, self.bin_edges_ = _hist_per_column(X, self.feature_types_in_)
+        ### END TO MODIFY
+
         self.partial_fit(X, y)
         return self
 
@@ -181,7 +220,8 @@ class NAMBase:
     def plot(self, feature_index) -> None:
         num_samples = 1000
         X = np.zeros((num_samples, self.num_inputs))
-        X[:, feature_index] = np.linspace(-1.0, 1.0, num_samples)
+        X[:, feature_index] = np.linspace(self.X_mins_[feature_index], self.X_maxs_[feature_index], num_samples)
+        # X[:, feature_index] = np.linspace(-1.0, 1.0, num_samples)
         
         feature_outputs = []
         for model in self.models:
@@ -214,7 +254,180 @@ class NAMBase:
 
         self._fitted = True
         return
+    
+    def explain_local(self, X, y=None, name=None):
+        if name is None:
+            name = gen_name_from_class(self)
 
+        n_samples = None
+        if y is not None:
+            y = clean_dimensions(y, "y")
+            if y.ndim != 1:
+                msg = "y must be 1 dimensional"
+                raise ValueError(msg)
+            n_samples = len(y)
+
+            if is_classifier(self):
+                y = typify_classification(y)
+            else:
+                y = y.astype(np.float64, copy=False)
+        
+        X, n_samples = preclean_X(
+            X, self.feature_names_in_, self.feature_types_in_, n_samples
+        )
+
+        if n_samples == 0:
+            msg = "X cannot have 0 samples"
+            raise ValueError(msg)
+        
+        X, _, _ = unify_data(
+            X, n_samples, self.feature_names_in_, self.feature_types_in_, False, 0
+        )
+        pass
+
+    def explain_global(self, name=None):
+        # check_is_fitted(self)
+
+        if name is None:
+            name = gen_name_from_class(self)
+
+        specific_data_dicts = []
+        for index, _feature in enumerate(self.feature_names_in_):
+            plot = self.plot(index)
+            grid_points = plot['x']
+            y_scores = plot['y']
+
+            data_dict = {
+                "names": grid_points,
+                "scores": y_scores,
+                "density": {
+                    "scores": self.bin_counts_[index],
+                    "names": self.bin_edges_[index],
+                },
+            }
+
+            specific_data_dicts.append(data_dict)
+
+        overall_data_dict = {
+            "names": self.feature_names_in_,
+            "scores": list(y_scores),
+            "extra": {"names": ["Intercept"], "scores": [1]},
+        }
+
+        internal_obj = {
+            "overall": overall_data_dict,
+            "specific": specific_data_dicts,
+            "mli": [
+                {
+                    "explanation_type": "global_feature_importance",
+                    "value": {"scores": list(y_scores), "intercept": 1},
+                }
+            ],
+        }
+        return NAMExplanation(
+            "global",
+            internal_obj,
+            feature_names=self.feature_names_in_,
+            feature_types=self.feature_types_in_,
+            name=name,
+            selector=self.global_selector_,
+        )
+
+class NAMExplanation(FeatureValueExplanation):
+    """Visualizes specifically for NAM methods."""
+
+    explanation_type = None
+
+    def __init__(
+        self, 
+        explanation_type, 
+        internal_obj, 
+        feature_names=None, 
+        feature_types=None, 
+        name=None, 
+        selector=None,
+    ):
+        """Initializes class.
+        
+        Args:
+            explanation_type:  Type of explanation.
+            internal_obj: A jsonable object that backs the explanation.
+            feature_names: List of feature names.
+            feature_types: List of feature types.
+            name: User-defined name of explanation.
+            selector: A dataframe whose indices correspond to explanation entries.
+        """
+        super().__init__(
+            explanation_type, 
+            internal_obj, 
+            feature_names, 
+            feature_types, 
+            name, 
+            selector,
+        )
+
+    def visualize(self, key=None):
+        """Provides interactive visualizations.
+
+        Args:
+            key: Either a scalar or list
+                that indexes the internal object for sub-plotting.
+                If an overall visualization is requested, pass None.
+
+        Returns:
+            A Plotly figure.
+        """
+        from ....visual.plot import (
+            get_explanation_index,
+            get_sort_indexes,
+            mli_plot_horizontal_bar,
+            mli_sort_take,
+            plot_horizontal_bar,
+            sort_take,
+        )
+
+        if isinstance(key, tuple) and len(key) == 2:
+            provider, key = key
+            if (
+                provider == "mli"
+                and "mli" in self.data(-1)
+                and self.explanation_type == "global"
+            ):
+                explanation_list = self.data(-1)["mli"]
+                explanation_index = get_explanation_index(
+                    explanation_list, "global_feature_importance"
+                )
+                scores = explanation_list[explanation_index]["value"]["scores"]
+                sort_indexes = get_sort_indexes(
+                    scores, sort_fn=lambda x: -abs(x), top_n=15
+                )
+                sorted_scores = mli_sort_take(
+                    scores, sort_indexes, reverse_results=True
+                )
+                sorted_names = mli_sort_take(
+                    self.feature_names, sort_indexes, reverse_results=True
+                )
+                return mli_plot_horizontal_bar(
+                    sorted_scores,
+                    sorted_names,
+                    title="Overall Importance:<br>Coefficients",
+                )
+            # pragma: no cover
+            msg = f"Visual provider {provider} not supported"
+            raise RuntimeError(msg)
+        data_dict = self.data(key)
+        if data_dict is None:
+            return None
+
+        if self.explanation_type == "global" and key is None:
+            data_dict = sort_take(
+                data_dict, sort_fn=lambda x: -abs(x), top_n=15, reverse_results=True
+            )
+            return plot_horizontal_bar(
+                data_dict, title="Overall Importance:<br>Coefficients"
+            )
+
+        return super().visualize(key)
 
 class NAMClassifier(NAMBase):
     def __init__(
@@ -292,7 +505,6 @@ class NAMClassifier(NAMBase):
 
     def predict(self, X) -> ArrayLike:
         return self.predict_proba(X).round()
-
     
 class NAMRegressor(NAMBase):
     def __init__(
@@ -501,3 +713,25 @@ class MultiTaskNAMRegressor(NAMRegressor):
                 hidden_sizes=self.hidden_sizes)
             model.to(self.device)
             self.models.append(model)
+
+def _hist_per_column(arr, feature_types=None):
+    counts = []
+    bin_edges = []
+
+    if feature_types is not None:
+        for i, feat_type in enumerate(feature_types):
+            if feat_type == "continuous":
+                count, bin_edge = np.histogram(arr[:, i], bins="doane")
+                counts.append(count)
+                bin_edges.append(bin_edge)
+            elif feat_type in ("nominal", "ordinal"):
+                # Todo: check if this call
+                bin_edge, count = np.unique(arr[:, i], return_counts=True)
+                counts.append(count)
+                bin_edges.append(bin_edge)
+    else:
+        for i in range(arr.shape[1]):
+            count, bin_edge = np.histogram(arr[:, i], bins="doane")
+            counts.append(count)
+            bin_edges.append(bin_edge)
+    return counts, bin_edges

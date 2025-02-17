@@ -1,3 +1,30 @@
+## 2025-02-15, 2025-02-16 and 2025-02-17
+
+### Summary of the Day
+- Total Hours Worked: 5
+- Main Objective: Achieve global visualization of Categorical Naive Bayes and adapt NAM global visualization to InterpretML.
+
+### Tasks Completed
+1. Integrate global visualization of CatNB as commented in the meeting
+2. Studied the code of the NAM wrapper 
+3. Modified the plot function to better visualize feature contributions
+4. Implemented a basic version of the global visualization for NAMs
+
+### In-Progress
+- Gaussian Naive Bayes Global Explanation Visualization.
+- NAM global and local contributions and integration with InterpretML.
+
+### Next Steps for Tomorrow
+- Investigate how NAM local contributions would work.
+- Work on Gaussian NB global contribution visualization.
+- Continue TFG Memory.
+
+### Issues/Blockers
+- Difficulty adapting the NAM wrapper to InterpretML because NAM model lacks many of the standard attributes of InterpretML models. So many modifications were made to NAM wrapper, though it worked.
+- Possibility of modifying global visualization for CategoricalNB similar to EBM (the mail I sent you).
+- Combining Gaussian NB and Categorical NB in the same file.
+---
+
 ## 2025-02-10
 
 ### Summary of the Day

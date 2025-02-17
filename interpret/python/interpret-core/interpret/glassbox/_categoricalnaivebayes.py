@@ -281,12 +281,11 @@ class BaseNaiveBayes:
 
         specific_data_dicts = []
         for index, _feature in enumerate(self.feature_names_in_):
-            grid_points = np.array(self.categorical_uniq_[index])
+            feat_min = self.X_mins_[index]
+            feat_max = self.X_maxs_[index]
+            grid_points = np.linspace(feat_min, feat_max + 0.99, 2000)
 
-            y_scores = []
-
-            for x in grid_points:
-                y_scores.append(get_ratio(model, x, index))
+            y_scores = [get_ratio(model, x, index) for x in grid_points]
 
             data_dict = {
                 "names": grid_points,
