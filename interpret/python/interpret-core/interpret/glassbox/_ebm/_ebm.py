@@ -1863,7 +1863,7 @@ class EBMModel(BaseEstimator):
                 self.term_scores_,
                 self.term_features_,
             )
-            print(explanations)
+
             scores = explanations.sum(axis=1) + intercept
             if init_score is not None:
                 scores += init_score
