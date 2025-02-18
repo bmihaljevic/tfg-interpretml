@@ -127,7 +127,7 @@ class NAMBase:
         if not self.warm_start or not self._fitted:
             self._initialize_models(X, y)
 
-        #### TO MODIFY
+        #### TODO: MODIFY
         self.X_mins_ = np.min(X, axis=0)
         self.X_maxs_ = np.max(X, axis=0)
 
@@ -207,7 +207,7 @@ class NAMBase:
         if isinstance(X, pd.DataFrame):
             X = X.to_numpy()
         # X = self._preprocessor.transform(X)
-        X = torch.tensor(X, requires_grad=False, dtype=torch.float)
+        X = torch.tensor(X.astype(np.float32), requires_grad=False, dtype=torch.float)
         predictions = np.zeros((X.shape[0], self.num_tasks))
 
         for model in self.models:
@@ -223,6 +223,8 @@ class NAMBase:
         X[:, feature_index] = np.linspace(self.X_mins_[feature_index], self.X_maxs_[feature_index], num_samples)
         # X[:, feature_index] = np.linspace(-1.0, 1.0, num_samples)
         
+        print(X.shape)
+
         feature_outputs = []
         for model in self.models:
             # (examples, tasks, features)
@@ -234,8 +236,10 @@ class NAMBase:
 
         # (learners, examples, tasks)
         feature_outputs = np.stack(feature_outputs, axis=0)
+        print(feature_outputs.shape)
         # (examples, tasks)
         y = np.mean(feature_outputs, axis=0).squeeze()
+        print(y.shape)
         conf_int = np.std(feature_outputs, axis=0).squeeze()
         # TODO: Scale conf_int according to units of y
 
@@ -255,6 +259,18 @@ class NAMBase:
         self._fitted = True
         return
     
+    def get_contributions(self, X):
+        feature_outputs = []
+
+        for m in self.models:
+            _, fnns_out = m.forward(torch.tensor(X.astype(np.float32), dtype=torch.float32))
+            fnns_out = fnns_out.unsqueeze(dim=1)
+            feature_outputs.append(fnns_out[:, :, :, :].detach().cpu().numpy())
+
+        feature_outputs = np.stack(feature_outputs, axis=0)
+        y = np.mean(feature_outputs, axis=0).squeeze()
+        return y
+        
     def explain_local(self, X, y=None, name=None):
         if name is None:
             name = gen_name_from_class(self)
@@ -283,7 +299,75 @@ class NAMBase:
         X, _, _ = unify_data(
             X, n_samples, self.feature_names_in_, self.feature_types_in_, False, 0
         )
-        pass
+        
+        classes = None
+        is_classification = is_classifier(self)
+
+        predictions = self.predict(X)
+        individual_preds = self.get_contributions(X)
+
+        data_dicts = []
+        scores_list = []
+        perf_list = []
+        perf_dicts = gen_perf_dicts(predictions, y, is_classification, classes)
+        for i, instance in enumerate(X):
+            scores = individual_preds[i, :]
+            scores_list.append(scores)
+            data_dict = {}
+            data_dict["data_type"] = "univariate"
+
+            # Performance related (conditional)
+            perf_dict_obj = None if perf_dicts is None else perf_dicts[i]
+            data_dict["perf"] = perf_dict_obj
+            perf_list.append(perf_dict_obj)
+
+            # Names/scores
+            data_dict["names"] = self.feature_names_in_
+            data_dict["scores"] = scores
+
+            # Values
+            data_dict["values"] = instance
+
+            # TODO: intercept?
+            data_dict["extra"] = {
+                "names": ["Intercept"],
+                "scores": [1],
+                "values": [1],
+            }
+            data_dicts.append(data_dict)
+        
+        internal_obj = {
+            "overall": None,
+            "specific": data_dicts,
+            "mli": [
+                {
+                    "explanation_type": "local_feature_importance",
+                    "value": {
+                        "scores": scores_list,
+                        # TODO: intercept?
+                        "intercept": 1,
+                        "perf": perf_list,
+                    },
+                }
+            ],
+        }
+        internal_obj["mli"].append(
+            {
+                "explanation_type": "evaluation_dataset",
+                "value": {"dataset": X, "dataset_y": y},
+            }
+        )
+
+        selector = gen_local_selector(data_dicts, is_classification=is_classification)
+
+        return FeatureValueExplanation(
+            "local",
+            internal_obj,
+            feature_names=self.feature_names_in_,
+            feature_types=self.feature_types_in_,
+            name=name,
+            selector=selector,
+        )
 
     def explain_global(self, name=None):
         # check_is_fitted(self)
@@ -486,6 +570,7 @@ class NAMClassifier(NAMBase):
             random_state=random_state
         )
         self.regression = False
+        self.estimator_type = 'classifier'
 
     def fit(self, X, y, w=None):
         if isinstance(X, pd.DataFrame):
