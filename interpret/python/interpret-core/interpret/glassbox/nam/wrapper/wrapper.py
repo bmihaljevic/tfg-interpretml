@@ -303,7 +303,7 @@ class NAMBase:
         classes = None
         is_classification = is_classifier(self)
 
-        predictions = self.predict(X)
+        predictions = self.predict_proba(X).squeeze()
         individual_preds = self.get_contributions(X)
 
         data_dicts = []
@@ -331,7 +331,7 @@ class NAMBase:
             # TODO: intercept?
             data_dict["extra"] = {
                 "names": ["Intercept"],
-                "scores": [1],
+                "scores": [0.5],
                 "values": [1],
             }
             data_dicts.append(data_dict)
@@ -345,7 +345,7 @@ class NAMBase:
                     "value": {
                         "scores": scores_list,
                         # TODO: intercept?
-                        "intercept": 1,
+                        "intercept": 0.5,
                         "perf": perf_list,
                     },
                 }
@@ -570,7 +570,7 @@ class NAMClassifier(NAMBase):
             random_state=random_state
         )
         self.regression = False
-        self.estimator_type = 'classifier'
+        self._estimator_type = 'classifier'
 
     def fit(self, X, y, w=None):
         if isinstance(X, pd.DataFrame):
