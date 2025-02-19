@@ -1,0 +1,7 @@
+- Add Gaussian Global Contributions
+- Reorganise NAM wrapper code, adding every interpretml feature (hard-coded diabetes features)
+- Read about Tree Augmented Naive Bayes (TAN)
+- Read about Bayesian Networks
+- Are GaussianNB features considered continuous? What about CategoricalNB?
+- Review visualization details of GaussianNB
+- Review visualization details of CategoricalNB

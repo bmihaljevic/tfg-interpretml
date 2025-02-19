@@ -1,3 +1,31 @@
+## 2025-02-19
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Finished local visualization for NAMs
+
+### Tasks Completed
+1. Add a function to compute contributions on a specific point
+2. Using this function, completed local visualization of NAMs
+3. Started GAMs section in the TFG memory.
+
+### In-Progress
+- Gaussian Naive Bayes Global Explanation Visualization.
+- NAM local contributions and integration with InterpretML.
+- Explore TAN model
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Work on Gaussian NB global contribution visualization.
+- Read about TAN
+- Continue TFG Memory.
+
+### Issues/Blockers
+- Difficulty adapting the NAM wrapper to InterpretML because NAM model lacks many of the standard attributes of InterpretML models. So many modifications were made to NAM wrapper, though it worked.
+- Combining Gaussian NB and Categorical NB in the same file.
+
+---
+
 ## 2025-02-18
 
 ### Summary of the Day
