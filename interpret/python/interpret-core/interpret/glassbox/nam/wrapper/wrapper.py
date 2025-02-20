@@ -7,7 +7,6 @@ from numpy.typing import ArrayLike
 import pandas as pd
 import scipy
 from sklearn.exceptions import NotFittedError
-from sklearn.preprocessing import MinMaxScaler
 import torch
 
 from nam.data import NAMDataset
@@ -58,7 +57,9 @@ class NAMBase:
         num_learners: int = 1,
         n_jobs: int = None,
         warm_start: bool = False,
-        random_state: int = 42
+        random_state: int = 42,
+        feature_names: list = None,
+        feature_types: list = None
     ) -> None:
         self.units_multiplier = units_multiplier
         self.num_basis_functions = num_basis_functions
@@ -85,6 +86,8 @@ class NAMBase:
         self.n_jobs = n_jobs
         self.warm_start = warm_start
         self.random_state = random_state
+        self.feature_names = feature_names
+        self.feature_types = feature_types
 
         self._best_checkpoint_suffix = 'best'
         self._fitted = False
@@ -116,26 +119,44 @@ class NAMBase:
         return
 
     def fit(self, X, y, w=None):
-        if isinstance(X, pd.DataFrame):
-            X = X.to_numpy()
-        if isinstance(y, (pd.DataFrame, pd.Series)):
-            y = y.to_numpy()
-        if isinstance(w, (pd.DataFrame, pd.Series)):
-            w = w.to_numpy()
+        """
+        Fits the model.
+
+        Args:
+            X: Numpy array for training instances.
+            y: Numpy array as training labels.
+        """
+        y = clean_dimensions(y, "y")
+        if y.ndim != 1:
+            msg = "y must be 1 dimensional"
+            raise ValueError(msg)
+        if len(y) == 0:
+            msg = "y cannot have 0 samples"
+            raise ValueError(msg)
+        
+        if is_classifier(self):
+            y = typify_classification(y)
+        else:
+            y = y.astype(np.float64, copy=False)
 
         self._set_random_state()
         if not self.warm_start or not self._fitted:
             self._initialize_models(X, y)
 
-        #### TODO: MODIFY
+        X, n_samples = preclean_X(X, self.feature_names, self.feature_types, len(y))
+
+        X, self.feature_names_in_, self.feature_types_in_ = unify_data(
+            X, n_samples, self.feature_names, self.feature_types, False, 0
+        )
+
         self.X_mins_ = np.min(X, axis=0)
         self.X_maxs_ = np.max(X, axis=0)
+        self.categorical_uniq_ = {}
 
-        self.feature_names_in_ = ['pregnancies', 'glucose', 'diastolic', 
-                            'triceps', 'insulin', 'bmi', 'dpf', 'age']
-        self.feature_types_in_ = ['continuous', 'continuous', 'continuous',
-                            'continuous', 'continuous', 'continuous', 'continuous', 'continuous']
-        
+        for i, feature_type in enumerate(self.feature_types_in_):
+            if feature_type in ("nominal", "ordinal"):
+                self.categorical_uniq_[i] = sorted(set(X[:, i]))
+
         unique_val_counts = np.zeros(len(self.feature_names_in_), dtype=np.int64)
         for col_idx in range(len(self.feature_names_in_)):
             X_col = X[:, col_idx]
@@ -150,7 +171,6 @@ class NAMBase:
             None,
         )
         self.bin_counts_, self.bin_edges_ = _hist_per_column(X, self.feature_types_in_)
-        ### END TO MODIFY
 
         self.partial_fit(X, y)
         return self
@@ -158,9 +178,6 @@ class NAMBase:
     def partial_fit(self, X, y, w=None) -> None:
         self._models_to_device(self.device)
         
-        # self._preprocessor = MinMaxScaler(feature_range = (-1, 1))
-
-        # dataset = NAMDataset(self._preprocessor.fit_transform(X), y, w)
         dataset = NAMDataset(X, y, w)
 
         self.criterion = make_penalized_loss_func(self.loss_func, 
@@ -206,7 +223,7 @@ class NAMBase:
 
         if isinstance(X, pd.DataFrame):
             X = X.to_numpy()
-        # X = self._preprocessor.transform(X)
+
         X = torch.tensor(X.astype(np.float32), requires_grad=False, dtype=torch.float)
         predictions = np.zeros((X.shape[0], self.num_tasks))
 
@@ -214,7 +231,6 @@ class NAMBase:
             preds, _ = model.forward(X)
             predictions += preds.detach().cpu().numpy()
 
-        # predictions = self._preprocessor.inverse_transform(predictions)
         return predictions / self.num_learners
 
     def plot(self, feature_index) -> None:
@@ -223,8 +239,6 @@ class NAMBase:
         X[:, feature_index] = np.linspace(self.X_mins_[feature_index], self.X_maxs_[feature_index], num_samples)
         # X[:, feature_index] = np.linspace(-1.0, 1.0, num_samples)
         
-        print(X.shape)
-
         feature_outputs = []
         for model in self.models:
             # (examples, tasks, features)
@@ -236,10 +250,8 @@ class NAMBase:
 
         # (learners, examples, tasks)
         feature_outputs = np.stack(feature_outputs, axis=0)
-        print(feature_outputs.shape)
         # (examples, tasks)
         y = np.mean(feature_outputs, axis=0).squeeze()
-        print(y.shape)
         conf_int = np.std(feature_outputs, axis=0).squeeze()
         # TODO: Scale conf_int according to units of y
 
@@ -370,16 +382,19 @@ class NAMBase:
         )
 
     def explain_global(self, name=None):
-        # check_is_fitted(self)
+        check_is_fitted(self)
 
         if name is None:
             name = gen_name_from_class(self)
 
         specific_data_dicts = []
-        for index, _feature in enumerate(self.feature_names_in_):
+        overall_scores = []
+        for index, _ in enumerate(self.feature_names_in_):
             plot = self.plot(index)
             grid_points = plot['x']
             y_scores = plot['y']
+            # TODO: Modify overall scores
+            overall_scores.append(np.std(y_scores))
 
             data_dict = {
                 "names": grid_points,
@@ -392,10 +407,11 @@ class NAMBase:
 
             specific_data_dicts.append(data_dict)
 
+        # TODO: Modify overall scores and intercept
         overall_data_dict = {
             "names": self.feature_names_in_,
-            "scores": list(y_scores),
-            "extra": {"names": ["Intercept"], "scores": [1]},
+            "scores": list(overall_scores),
+            "extra": {"names": ["Intercept"], "scores": [0.5]},
         }
 
         internal_obj = {
@@ -403,8 +419,9 @@ class NAMBase:
             "specific": specific_data_dicts,
             "mli": [
                 {
+                    # TODO: What is this?
                     "explanation_type": "global_feature_importance",
-                    "value": {"scores": list(y_scores), "intercept": 1},
+                    "value": {"scores": list(y_scores), "intercept": 0.5},
                 }
             ],
         }
@@ -572,14 +589,7 @@ class NAMClassifier(NAMBase):
         self.regression = False
         self._estimator_type = 'classifier'
 
-    def fit(self, X, y, w=None):
-        if isinstance(X, pd.DataFrame):
-            X = X.to_numpy()
-        if isinstance(y, (pd.DataFrame, pd.Series)):
-            y = y.to_numpy()
-        if isinstance(w, (pd.DataFrame, pd.Series)):
-            w = w.to_numpy()
-            
+    def fit(self, X, y, w=None):            
         if len(np.unique(y[~np.isnan(y)])) > 2:
             raise ValueError('More than two unique y-values detected. Multiclass classification not currently supported.')
         return super().fit(X, y, w)
