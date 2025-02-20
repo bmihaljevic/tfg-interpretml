@@ -105,6 +105,8 @@ class BaseNaiveBayes:
         )
         self.bin_counts_, self.bin_edges_ = _hist_per_column(X, self.feature_types_in_)
 
+        self.classes_ = self.model.classes_
+
         self.has_fitted_ = True
 
         return self
@@ -251,6 +253,76 @@ class BaseNaiveBayes:
             name=name,
             selector=selector,
         )
+    
+    def explain_global(self, name=None):
+        """Provides global explanations.
+
+        Args:
+            name: User-defined explanation name.
+
+        Returns:
+            An explanation object, visualizing feature-value pairs
+            as horizontal bar charts.
+        """
+
+        check_is_fitted(self, "has_fitted_")
+
+        if name is None:
+            name = gen_name_from_class(self)
+
+        model = self._model()
+
+        def get_ratio(model, value, index):
+            class_0_cp = np.exp(-0.5 * ((value - model.theta_[0, index]) ** 2) / (model.var_[0, index])) / (np.sqrt(2 * np.pi * model.var_[0, index]))
+            class_1_cp = np.exp(-0.5 * ((value - model.theta_[1, index]) ** 2) / (model.var_[1, index])) / (np.sqrt(2 * np.pi * model.var_[1, index]))
+            return np.log(class_1_cp / class_0_cp)
+        
+        keep_idxs = []
+        specific_data_dicts = []
+        for index, _ in enumerate(self.feature_names_in_):
+            keep_idxs.append(index)
+
+            min_feature_val = self.X_mins_[index]
+            max_feature_val = self.X_maxs_[index]
+            
+            grid_points = np.linspace(min_feature_val, max_feature_val, 5000)
+            model_graph = [get_ratio(model, val, index) for val in grid_points]
+
+            y_scores = model_graph
+
+            data_dict = {
+                "names": grid_points,
+                "scores": y_scores,
+                "density": {
+                    "scores": self.bin_counts_[index],
+                    "names": self.bin_edges_[index],
+                }
+            }
+
+            specific_data_dicts.append(data_dict)
+
+        overall_data_dict = None
+
+        internal_obj = {
+            "overall": overall_data_dict,
+            "specific": specific_data_dicts,
+            "mli": [
+                {
+                    "explanation_type": "global_gaussian_naive_bayes"
+                }
+            ]
+        }
+
+        return NaiveBayesExplanation(
+            "global",
+            internal_obj,
+            feature_names=self.feature_names_in_,
+            feature_types=self.feature_types_in_,
+            name=name,
+            selector=self.global_selector_,
+        )
+
+
 
 class NaiveBayesExplanation(FeatureValueExplanation):
     """Visualizes specifically for NB methods."""

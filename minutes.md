@@ -1,6 +1,59 @@
 
 # Weekly Progress Meeting Minutes
 
+**Date:** 2025-02-20
+
+---
+
+## 1. Summary of Weekly Progress  
+
+- **Main Objectives:** Global contributions of NB and integration of NAMs
+- **Key Accomplishments:**
+  - NAM "completely" integrated, both global and local visualizations using InterpretML visuals 
+  - Global CategoricalNB implemented, using specific categorical visualization
+  - Global GaussianNB started, has to be reviewed.
+  - Continued TFG Memory
+- **Overall Status:** On Track  
+
+## 2. Task Summary  
+
+| Task                                   | Status     | Time Spent | Summary                                                                                  |  
+|----------------------------------------|------------|------------|------------------------------------------------------------------------------------------|  
+| Global Contributions NAM  | Completed | 1.5h | Using the "plot" function as a base, it wasn't difficult to recreate it with InterpretML visuals. |  
+| Reorganized lots of NAM attributes and methods | Completed | 2h | As NAM wrapper was made by an independent guy, there were some difficulties integrating its code. |  
+| Local Contributions NAM | Completed | 1.5h | Used global functions to obtain each local value and plot it using InterpretML visuals. |  
+| Global Contributions GaussianNB | Completed | 1h | Made an initial version of the GaussianNB features global contributions. |  
+| Global Contributions CategoricalNB | Completed | 2.5h | Not many problems with the calculus but the visualization, as the model was considering coded categorical features as numerical. |  
+| Continued "Memoria TFG" | In progress | 1h | Read and wrote about Linear, GLM and GAM models. |  
+
+## 3. Challenges/Issues  
+
+- **Issue 1**: **Handling Different Feature Types in Naive Bayes Models**  
+  - **Impact**: The base models I used as a base for Naive Bayes supported both continuous and categorical features. However, adapting them to work with InterpretML required modifying some of its built-in attributes and functions, which caused difficulties.   
+  - **Proposed Solution**: Customize each Naive Bayes model to properly handle the type.
+
+- **Issue 2**: **Limited Attributes and Methods in the Original NAM Wrapper**  
+  - **Impact**:  The NAM model is well-designed, but its original wrapper lacks many attributes and methods necessary for a smooth adaptation to InterpretML. This required removing and adding several elements to make it compatible. 
+  - **Proposed Solution**: Expand and refine the wrapper to improve its integration with InterpretML.  
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** 
+- **Goal 2:** 
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
+
 **Date:** 2025-02-05
 
 ---

@@ -278,13 +278,12 @@ class BaseNaiveBayes:
             cp_1 = np.exp(model.feature_log_prob_[index][1][int(value)])
             return np.log(cp_0 / cp_1)
 
-
         # Add per feature graph
         data_dicts = []
         feature_list = []
         density_list = []
         keep_idxs = []
-        for index, feature in enumerate(self.feature_names_in_):
+        for index, _ in enumerate(self.feature_names_in_):
             keep_idxs.append(index)
             bin_labels = self.categorical_uniq_[index]
             histogram_weights = model.category_count_[index]
@@ -292,10 +291,6 @@ class BaseNaiveBayes:
             names = bin_labels
             densities = list(np.array(histogram_weights).sum(axis=0))
 
-            print(bin_labels)
-            print(densities)
-            print()
-            
             model_graph = [get_ratio(model, x, index) for x in bin_labels]
 
             scores = list(model_graph)
@@ -313,6 +308,7 @@ class BaseNaiveBayes:
                 "upper_bounds": None,
                 "lower_bounds": None,
             }
+
             feature_list.append(feature_dict)
             density_list.append(density_dict)
 
@@ -339,14 +335,14 @@ class BaseNaiveBayes:
         term_names = self.feature_names_in_
         term_types = self.feature_types_in_
 
-        # TODO: Implement term_importances
+        # TODO: Implement term_importances for overall_dict
         #importances = self.term_importances()
-        importances = [1] * len(term_names)
+        importances = None
 
         overall_dict = {
             "type": "univariate",
             "names": [term_names[i] for i in keep_idxs],
-            "scores": [importances[i] for i in keep_idxs],
+            "scores": importances,
         }
 
         internal_obj = {
@@ -354,27 +350,12 @@ class BaseNaiveBayes:
             "specific": data_dicts,
             "mli": [
                 {
-                    "explanation_type": "ebm_global",
+                    "explanation_type": "global_categorical_naive_bayes",
                     "value": {"feature_list": feature_list},
                 },
                 {"explanation_type": "density", "value": {"density": density_list}},
             ],
         }
-
-        print(self.n_features_in_)
-        print([term_names[i] for i in keep_idxs])
-        print([term_types[i] for i in keep_idxs])
-        print(getattr(self, "unique_val_counts_", None))
-
-        print()
-
-        print(gen_global_selector(
-        self.n_features_in_,
-        [term_names[i] for i in keep_idxs],
-        [term_types[i] for i in keep_idxs],
-        [len(x) for x in self.categorical_uniq_.values()],
-        None,
-    ))
 
         return NaiveBayesExplanation(
             "global",

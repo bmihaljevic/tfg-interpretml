@@ -1,3 +1,32 @@
+## 2025-02-20
+
+### Summary of the Day
+- Total Hours Worked: 2.5
+- Main Objective: Reorganize NAM code and finish (?) global visualization of GaussianNB
+
+### Tasks Completed
+1. Reorganize NAM code, substituting unuseful/wrapper-specific/hard-coded features with native interpret functions
+2. Review local visualizations of GaussianNB and CatNB
+3. Implement a first version of the global GaussianNB contributions.
+
+### In-Progress
+- Gaussian Naive Bayes Global Explanation Visualization.
+- NAM local contributions and integration with InterpretML.
+- Explore TAN model
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Work on Gaussian NB global contribution visualization.
+- Read about TAN
+- Continue TFG Memory.
+
+### Issues/Blockers
+- Difficulty adapting the NAM wrapper to InterpretML because NAM model lacks many of the standard attributes of InterpretML models. So many modifications were made to NAM wrapper, though it worked.
+- Combining Gaussian NB and Categorical NB in the same file.
+- What type of features are assumed by each model?
+
+---
+
 ## 2025-02-19
 
 ### Summary of the Day
