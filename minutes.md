@@ -150,3 +150,193 @@
 | [Action Item Description] | [Date] |
 | [Action Item Description] | [Date] |
 
+---
+---
+
+# Weekly Progress Meeting Minutes
+
+**Date:** 2024-12-04  
+
+---
+
+## 1. Summary of Weekly Progress  
+
+- **Main Objectives:** Integrate local explanation of Gaussian Naive Bayes with custom visualization functions of InterpretML. 
+- **Key Accomplishments:**  
+  - Implemented local contributions for Naive Bayes and tested its behavior.  
+  - Explored and tested LDA and QDA models, analyzing their internal attributes and decision functions.  
+  - Discovered that Gaussian Naive Bayes does not natively handle missing data, despite NB should ignore it.
+  - Investigated how libraries in PyPI are structured and published.  
+- **Overall Status:** On Track  
+
+## 2. Task Summary  
+
+| Task                                   | Status     | Time Spent | Summary                                                                                  |  
+|----------------------------------------|------------|------------|------------------------------------------------------------------------------------------|  
+| Understand local contributions for Naive Bayes | Completed | 2h | Researched how to compute local contributions and implemented a version. |  
+| Explore and test LDA and QDA models | Completed | 2h | Read documentation, examined the decision functions and attributes of LDA and QDA in a notebook. |  
+| Investigate missing data handling in GaussianNB | Completed | 1h | Verified that GaussianNB does not support missing data directly and considered alternatives. |  
+| Modify InterpretML for visualization | Completed | 2.5h | Adapted custom visualization functions for local contributions and tested them. |  
+| Study PyPI repository structure | Completed | 1h | Investigated packaging and publishing workflows for Python libraries. |  
+| Implement `_naivebayes.py` module | In progress | 2h | Created a module for Naive Bayes and started integrating it with the visualization functions. |  
+
+## 3. Challenges/Issues  
+
+- **Issue 1**: **Naive Bayes integration with visualization**  
+  - **Impact**: It was challenging to align the probabilistic outputs of Naive Bayes with the existing framework for visualization.  
+  - **Proposed Solution**: Took _linear.py and _decisiontree.py as a base to create _naivebayes.py, allowing me to understand the organization of the code.
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** Problems on missing data on Gaussian Naive Bayes of Scikit Learn
+- **Goal 2:** Understand how to make a package installable with pip
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
+
+## Weekly Progress Meeting Minutes
+
+**Date:** 2024-11-26
+
+---
+
+### 1. Summary of Weekly Progress
+- **Main Objectives:** Import 'our' interpretml library and modify it in order to control the visualizations.
+- **Key Accomplishments:** 
+  - Understanding of both 'explain_global' and 'explain_local'.
+  - Cloned interpretml repo and was able to modify it and use the custom functions.
+  - Set constant contributions in both functions and visualize them, observing how the visualizations are.
+- **Overall Status:** On Track
+
+### 2. Task Summary
+| Task | Status | Time Spent | Summary |
+|------|--------|------------|---------|
+| Understand both visualization functions | Completed | 2h |  |
+| Clone interpret repo and use it | Completed | 2.5h | Struggled a bit trying to use our interpret folder as a library |
+| Modify _ebm.py | Completed | 1.5h | By modifying the code it was easier to understand what the internal variables were doing. Set constant contributions and visualized it. |
+| Naive Bayes Understanding | Completed | 1h | Tried to understand how to integrate Naive Bayes with this visualization functions |
+| Naive Bayes Implementation | In progress | 2h | Created _naivebayes.py and started to program it |
+| Autoimmune Disease ML Challenge - Data Understanding | Completed | 2h | Visualized and understood how the data is organized |
+| Autoimmune Disease ML Challenge - Features extraction notebook | Completed | 1.5h | Created an initialization notebook that gets the features of the cell |
+
+### 3. Challenges/Issues
+  **Issue 1**: Difficulty modifying and using the source code of the InterpretML library
+  **Impact**: It took significant time to understand and adapt the process since it was the first time modifying a library's source code.
+  **Proposed Solution**: -
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** Problems on missing data on Gaussian Naive Bayes of Scikit Learn
+- **Goal 2:** Understand how to make a package installable with pip
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
+
+## Weekly Progress Meeting Minutes
+
+**Date:** 2024-11-21
+
+---
+
+### 1. Summary of Weekly Progress
+- **Main Objectives:** Import 'our' interpretml library and modify it in order to control the visualizations.
+- **Key Accomplishments:** 
+  - Understanding of both 'explain_global' and 'explain_local'.
+  - Cloned interpretml repo and was able to modify it and use the custom functions.
+  - Set constant contributions in both functions and visualize them, observing how the visualizations are.
+- **Overall Status:** On Track
+
+### 2. Task Summary
+| Task | Status | Time Spent | Summary |
+|------|--------|------------|---------|
+| Understand both visualization functions | Completed | 2h |  |
+| Clone interpret repo and use it | Completed | 2.5h | Struggled a bit trying to use our interpret folder as a library |
+| Modify _ebm.py | In progress | 1.5h | By modifying the code it was easier to understand what the internal variables were doing. Set constant contributions and visualized it. |
+| Naive Bayes Understanding | In progress | 1h | Tried to understand how to integrate Naive Bayes with this visualization functions |
+| Autoimmune Disease ML Challenge - Data Understanding | Completed | 2h | Visualized and understood how the data is organized |
+
+### 3. Challenges/Issues
+  **Issue 1**: Difficulty modifying and using the source code of the InterpretML library
+  **Impact**: It took significant time to understand and adapt the process since it was the first time modifying a library's source code.
+  **Proposed Solution**: -
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** [Description of goal or task for the following week]
+- **Goal 2:** [Description of goal or task for the following week]
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
+
+## Weekly Progress Meeting Minutes
+
+**Date:** 2024-11-14
+
+---
+
+### 1. Summary of Weekly Progress
+- **Main Objectives:** Analyze and understand the visualization functions: 'global_explain' and 'local_explain'
+- **Key Accomplishments:** 
+  - Mostly understood 'global_explain' and the internal variables that interfere in the calculus.
+  - Controlled the 'global_explain' visualizations, so now I can manage to change the contributions. This could be effective to use the visualizations for another model.
+- **Overall Status:** On Track
+
+### 2. Task Summary
+| Task | Status | Time Spent | Summary |
+|------|--------|------------|---------|
+| Understand 'global_explain' function | Completed | 2h | Having read the source code now I can understand which internal variables are important |
+| Control global explanations | Completed | 1h | The internal variable 'term_scores' is fundamental for the visualization |
+| Understand 'local_explain' function | In progress | 2h | There are some internal functions with an undefined role that I have to analyse |
+| Control local explanations | Blocked | | |
+
+
+### 3. Challenges/Issues
+- **Issue 1:** Issues understanding how are the calculations made to create the local contributions of each instance
+  - **Impact:** Need some more days to fully comprehend the functionality
+  - **Proposed Solution:** Fork the EBM repository to control all the internal functions and see what are they doing
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** [Description of goal or task for the following week]
+- **Goal 2:** [Description of goal or task for the following week]
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+

@@ -397,3 +397,285 @@
 
 ### Issues/Blockers
 -
+
+---
+
+## 2024-12-04
+
+### Summary of the Day
+- Total Hours Worked: 1.5
+- Main Objective: Understanding of LDA and QDA, and its internal parameters.
+
+### Tasks Completed
+1. Read documentation about LDA and QDA
+2. Created a notebook using LDA and QDA and examining its attributes.
+
+### In-Progress
+- Naive Bayes Implementation and Visualization for Binary Classification.
+- Naive Bayes Global Explanation visualization.
+- Comprehension of Discriminant Analysis.
+- Implementation of Discriminant Analysis.
+
+### Next Steps for Tomorrow
+- Look further into Discriminant Analysis.
+- Think about feature contribution in Discriminant Analysis.
+
+### Issues/Blockers
+-
+
+---
+
+## 2024-12-03
+
+### Summary of the Day
+- Total Hours Worked: 1.5
+- Main Objective: Understanding of Discriminant Analysis (linear and quadratic).
+
+### Tasks Completed
+1. Read documentation about LDA and QDA
+
+### In-Progress
+- Naive Bayes Implementation and Visualization for Binary Classification.
+- Naive Bayes Global Explanation visualization.
+- Comprehension of Discriminant Analysis.
+
+### Next Steps for Tomorrow
+- Look further into Discriminant Analysis.
+- Create a notebook using DA using and understanding its internal parameters.
+- Think about feature contribution in Discriminant Analysis.
+
+### Issues/Blockers
+-
+
+---
+
+## 2024-12-02
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Understand and investigate about the three topics mentioned in the meeting.
+
+### Tasks Completed
+1. Proved that GaussianNB from sklearn can't handle missing data.
+2. Understood that Naive Bayes should handle missing data without problem, because it can be ignored.
+3. Investigate about the uploading of a package to the PyPi repository. 
+4. Started reading about Discriminant Analysis.
+
+### In-Progress
+- Naive Bayes Implementation and Visualization for Binary Classification.
+- Naive Bayes Global Explanation visualization.
+- Comprehension of Discriminant Analysis.
+
+### Next Steps for Tomorrow
+- Look further into Discriminant Analysis.
+- Create a notebook using DA using and understanding its internal parameters.
+
+### Issues/Blockers
+-
+
+---
+
+## 2024-11-26
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Completed Naive Bayes local explanation visualization 
+
+### Tasks Completed
+1. Understood _linear.py and internal associated functions.
+2. Created conditional probabilities for each class 
+3. Local visualization done
+
+### In-Progress
+- Naive Bayes Implementation and Visualization for Binary Classification.
+- Global Explanation
+
+### Next Steps for Tomorrow
+- Look at some of the points mentioned in the meeting
+
+### Issues/Blockers
+-
+
+---
+
+## 2024-11-25
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Understanding the structure of a model file (based on _linear.py), in order to create _naivebayes.py, and start doing the model. 
+
+### Tasks Completed
+1. Understood _linear.py and internal associated functions.
+2. Started programming on _naivebayes.py based on _linear.py and reached to explain_local function.
+3. Understood which parameters are necessary to create conditional probabilities for NB. 
+
+### In-Progress
+- Naive Bayes Implementation and Visualization for Binary Classification.
+
+### Next Steps for Tomorrow
+- Keep going on _naivebayes.py, creating the conditional probabilities function and visualize local explanations.
+
+### Issues/Blockers
+- As I was looking at _linear.py model to create _naivebayes.py, I had no problem understanding the code (except some of the internal functions) because it's the simplest model they have.
+
+---
+
+## 2024-11-20 and 2024-11-21
+
+
+### Summary of the Day
+- Total Hours Worked: 3
+- Main Objective: Naive Bayes Understanding and Data Understanding for Autoimmune Disease ML Challenge (Clara's project) 
+
+### Tasks Completed
+1. Understanding of Naive Bayes
+2. Comprehension of ML Challenge Data
+
+### In-Progress
+- Naive Bayes Implementation and Visualization
+
+### Next Steps for Tomorrow
+- To be said in the meeting.
+
+### Issues/Blockers
+-  
+
+---
+
+## 2024-11-19
+
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Modify source code of 'EBMs' and control de visualizations. 
+
+### Tasks Completed
+1. Understanding of global and local explain function.
+1. Modify feature contributions (both in global and local explain function), so now it shows constant weights for each feature. This will allow us to use this graphical tools to visualize Naive Bayes contributions.
+
+### In-Progress
+- Naive Bayes feature contribution visualization.
+
+### Next Steps for Tomorrow
+- Task 1: Naive Bayes understanding and thinking how to integrate it.
+
+### Issues/Blockers
+- No big problems today. With the control of the library, if I have an issue I can execute a print and see what is happening.
+
+---
+
+## 2024-11-18
+
+
+### Summary of the Day
+- Total Hours Worked: 2.5
+- Main Objective: Use our 'interpretml' version. 
+
+### Tasks Completed
+1. Modify some part of the source code of the EBMs and verify that 'our' version of the library is working. In order to do that, I uninstalled the original interpretml library and installed it again (both interpret and interpret-core) pointing to our 'interpret' folder. I executed it in editable mode (pip install -e ...) so now every change in the source code will be instantly applied to the library.
+
+### In-Progress
+Understanding of 'explain_global' function.
+Modify the code of 'global_explain' and 'local_explain' and try other importances. This will allow us to visualize other models. 
+
+### Next Steps for Tomorrow
+- Task 1: Modify the code of 'global_explain' and 'local_explain' and try other importances.
+
+### Issues/Blockers
+- Still some problems with the library, specifically with 'libebm'. 'libebm' is a shared library that the EBM model needs, but it isn't in the github interpret repository, I think. I had to add a \root folder (which I found in the original interpret package folder in my PC) in the interpret-core folder. Now it is solved.
+
+---
+
+## 2024-11-15
+
+
+### Summary of the Day
+- Total Hours Worked: 1.5
+- Main Objective: 'interpretml' clone to work with it locally. 
+
+### Tasks Completed
+1. The library was succesfully cloned in the repository.
+
+### In-Progress
+Understanding of 'local_explain' function.
+Import "our" interpretml-custom library and use this one instead of the original.
+
+### Next Steps for Tomorrow
+- Task 1: Import "our" library and ensure it is working correctly. 
+
+### Issues/Blockers
+- Problems/Confusions related to libraries, versions and names. When trying to use "our" library, I struggled trying to import it and use it. However, I don't think this will be a problem. I will inspect what is happening and how to fix it.
+
+---
+
+## 2024-11-14
+
+
+### Summary of the Day
+- Total Hours Worked: 1.5
+- Main Objective: Understand how the EBMs local explanations graphs are made.
+
+### Tasks Completed
+1. 'local explain' function read: I tried to understand how the visualization was made by reading the code.
+
+2. Partial understanding of 'local explain': I mostly understood how the function works but still need to clarify some aspects.
+
+### In-Progress
+Understanding of 'local_explain' function.
+
+### Next Steps for Tomorrow
+- Task 1: Analyze the 'explain_local' function to finally understand it.
+
+### Issues/Blockers
+- There are some internal EBM functions with no comments so I don't really understand their goal.
+
+---
+
+## 2024-11-13
+
+
+### Summary of the Day
+- Total Hours Worked: 1.5
+- Main Objective: Understand how the EBMs explanations graphs are made.
+
+### Tasks Completed
+1. Bins and scores: Comprehend how are they used for the visualization, specifically in 'explain_global'.
+
+2. Modify scores: Change the scores of a variable to be able to "control" what is being visualized. I visualized random and constant scores.  
+
+### In-Progress
+None
+
+### Next Steps for Tomorrow
+- Task 1: Analyze the 'explain_global' function. Study this function in detail to understand how it creates explanations and how it uses internal variables.
+- Task 2: Take a look at the 'explain_local' function.
+- 
+
+### Issues/Blockers
+- Understanding EBM variables in visualizations: Some internal variables are still unclear regarding their role in the model explanations.
+
+---
+
+## 2024-11-12
+
+
+### Summary of the Day
+- Total Hours Worked: 3
+- Main Objective: Learn how EBM visualize each feature importance (global and local) and try some YellowBrick functionalities.
+
+### Tasks Completed
+1. EBMs on binary classification problem: Use a binary classification problem to understand the interpretability of EBMs and the explanations given.
+
+2. EBMs on multiclass classification problem: Use a multiclass classification problem to extend the knowledge of the first task.
+
+3. YellowBrick features: Try some visualization techniques given by YellowBrick with the multiclass classification problem to see how it works. 
+
+### In-Progress
+None
+
+### Next Steps for Tomorrow
+- Task 1: Understand in depth how the EBMs visualization/explanation function works.
+- Task 2: Try to modify some internal data of the model to visualize what i want. 
+
+### Issues/Blockers
+- Understanding the source code of EBMs: I tried to understand some functions as the 'explain_global' independently, but it was not easy. I'll have to take a general look at the code to understand what each internal variable of the model means.
