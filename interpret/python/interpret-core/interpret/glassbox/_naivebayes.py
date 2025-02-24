@@ -75,6 +75,8 @@ class BaseNaiveBayes:
             X, n_samples, self.feature_names, self.feature_types, False, 0
         )
 
+        X = X.astype(np.float64)
+
         self.model = self._model()
         self.model.fit(X, y)
 
@@ -84,11 +86,6 @@ class BaseNaiveBayes:
 
         self.X_mins_ = np.min(X, axis=0)
         self.X_maxs_ = np.max(X, axis=0)
-        self.categorical_uniq_ = {}
-
-        for i, feature_type in enumerate(self.feature_types_in_):
-            if feature_type in ("nominal", "ordinal"):
-                self.categorical_uniq_[i] = sorted(set(X[:, i]))
 
         unique_val_counts = np.zeros(len(self.feature_names_in_), dtype=np.int64)
         for col_idx in range(len(self.feature_names_in_)):
