@@ -1,3 +1,29 @@
+## 2025-02-24
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Merge both Naive Bayes into the same file and reviewed TAN and BN notes
+
+### Tasks Completed
+1. Eliminate CategoricalNB file, merging both in `_naivebayes.py`, being independent class which inherit from the same class. 
+2. Tested them in `trying_nb.ipynb` file.
+3. Read and review previous notes on TAN and BN.
+
+### In-Progress
+- Global Explanation Summary (not individual feature functions) of every model
+- Explore TAN model
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Read about TAN and BNs, maybe creating a notebook
+- Continue TFG Memory
+
+### Issues/Blockers
+- Difficulty adapting the NAM wrapper to InterpretML because NAM model lacks many of the standard attributes of InterpretML models. So many modifications were made to NAM wrapper, though it worked.
+- What type of features are assumed by each model?
+
+---
+
 ## 2025-02-20
 
 ### Summary of the Day

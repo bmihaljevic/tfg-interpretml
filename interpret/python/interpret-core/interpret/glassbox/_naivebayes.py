@@ -3,6 +3,7 @@ from abc import abstractmethod
 import numpy as np
 from sklearn.base import ClassifierMixin, is_classifier
 from sklearn.naive_bayes import GaussianNB as SKGaussianNB
+from sklearn.naive_bayes import CategoricalNB as SKCategoricalNB
 from sklearn.utils.validation import check_is_fitted
 
 from ..api.base import ExplainerMixin
@@ -18,19 +19,13 @@ from ..utils._explanation import (
 from ..utils._unify_data import unify_data
 
 class BaseNaiveBayes:
-    """
-    Base class for Naive Bayes interpretable model.
-    """
-
-    available_explanations = ["local"]
-    explainer_type = "model"
+    """Base class for Naive Bayes interpretable model."""
 
     def __init__(
             self, feature_names=None, feature_types=None, nb_class=SKGaussianNB, **kwargs
     ):
-        """
-        Initializes class.
-
+        """Initializes class.
+        
         Args:
             feature_names: List of feature names.
             feature_types: List of feature types.
@@ -46,6 +41,107 @@ class BaseNaiveBayes:
     def _model(self):
         # This method should be overridden.
         return None
+
+    def fit(self, X, y):
+        """Fits the model.
+        
+        Args:
+            X: Numpy array for training instances.
+            y: Numpy array as training labels.
+        """
+        
+        pass
+
+    def predict(self, X):
+        """Predicts on provided instances.
+        
+        Args:
+            X: Numpy array for instances.
+            
+        Returns:
+            Predicted class label per instance
+        """
+        
+        check_is_fitted(self, "has_fitted_")
+
+        X, n_samples = preclean_X(X, self.feature_names_in_, self.feature_types_in_)
+        X, _, _ = unify_data(
+            X, n_samples, self.feature_names_in_, self.feature_types_in_, False, 0
+        )
+
+        return self._model().predict(X)
+
+    def predict_proba(self, X):
+        """Probability estimates on provided instances.
+
+        Args:
+            X: Numpy array for instances.
+
+        Returns:
+            Probability estimate of instance for each class.
+        """
+
+        check_is_fitted(self, "has_fitted_")
+
+        X, n_samples = preclean_X(X, self.feature_names_in_, self.feature_types_in_)
+        X, _, _ = unify_data(
+            X, n_samples, self.feature_names_in_, self.feature_types_in_, False, 0
+        )
+
+        return self.model.predict_proba(X)
+
+    def explain_local(self, X, y=None, name=None):
+        """Provides local explanations for provided instances.
+
+        Args:
+            X: Numpy array for X to explain.
+            y: Numpy vector for y to explain.
+            name: User-defined explanation name.
+
+        Returns:
+            An explanation object, visualizing feature-value pairs
+            for each instance as horizontal bar charts.
+        """
+
+        pass
+    
+    def explain_global(self, name=None):
+        """Provides global explanations.
+
+        Args:
+            name: User-defined explanation name.
+
+        Returns:
+            An explanation object, visualizing feature-value pairs
+            as horizontal bar charts.
+        """
+
+        pass
+
+class GaussianNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
+    """
+    Base class for Naive Bayes interpretable model.
+    """
+
+    available_explanations = ["local", "global"]
+    explainer_type = "model"
+
+    def __init__(
+            self, feature_names=None, feature_types=None, nb_class=SKGaussianNB, **kwargs
+    ):
+        """
+        Initializes class.
+
+        Args:
+            feature_names: List of feature names.
+            feature_types: List of feature types.
+            nb_class: A scikit-learn Gaussian Naive Bayes class.
+            **kwargs: Kwargs pass to Naive Bayes class at initialization time.
+        """
+        super().__init__(feature_names, feature_types, nb_class, **kwargs)
+
+    def _model(self):
+        return self.model
 
     def fit(self, X, y):
         """
@@ -77,7 +173,7 @@ class BaseNaiveBayes:
 
         X = X.astype(np.float64)
 
-        self.model = self._model()
+        self.model = self.nb_class(**self.kwargs)
         self.model.fit(X, y)
 
         self.n_features_in_ = len(self.feature_names_in_)
@@ -107,25 +203,6 @@ class BaseNaiveBayes:
         self.has_fitted_ = True
 
         return self
-    
-    def predict(self, X):
-        """Predicts on provided instances.
-        
-        Args:
-            X: Numpy array for instances.
-            
-        Returns:
-            Predicted class label per instance
-        """
-        
-        check_is_fitted(self, "has_fitted_")
-
-        X, n_samples = preclean_X(X, self.feature_names_in_, self.feature_types_in_)
-        X, _, _ = unify_data(
-            X, n_samples, self.feature_names_in_, self.feature_types_in_, False, 0
-        )
-
-        return self._model().predict(X)
     
     def explain_local(self, X, y=None, name=None):
         """Provides local explanations for provided instances.
@@ -318,8 +395,337 @@ class BaseNaiveBayes:
             name=name,
             selector=self.global_selector_,
         )
+    
+class CategoricalNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
+    """
+    Base class for Naive Bayes interpretable model.
+    """
 
+    available_explanations = ["local", "global"]
+    explainer_type = "model"
 
+    def __init__(
+            self, feature_names=None, feature_types=None, nb_class=SKCategoricalNB, **kwargs
+    ):
+        """
+        Initializes class.
+
+        Args:
+            feature_names: List of feature names.
+            feature_types: List of feature types.
+            nb_class: A scikit-learn Gaussian Naive Bayes class.
+            **kwargs: Kwargs pass to Naive Bayes class at initialization time.
+        """
+        super().__init__(feature_names, feature_types, nb_class, **kwargs)
+
+    def _model(self):
+        return self.model
+
+    def fit(self, X, y):
+        """
+        Fits the model.
+        
+        Args:
+            X: Numpy array for training instances.
+            y: Numpy array as training labels.
+        """
+
+        y = clean_dimensions(y, "y")
+        if y.ndim != 1:
+            msg = "y must be 1 dimensional"
+            raise ValueError(msg)
+        if len(y) == 0:
+            msg = "y cannot have 0 samples"
+            raise ValueError(msg)
+        
+        if is_classifier(self.nb_class):
+            y = typify_classification(y)
+        else:
+            y = y.astype(np.float64, copy=False)
+
+        X, n_samples = preclean_X(X, self.feature_names, self.feature_types, len(y))
+
+        X, self.feature_names_in_, _ = unify_data(
+            X, n_samples, self.feature_names, self.feature_types, False, 0
+        )
+
+        self.feature_types_in_ = ["nominal"] * len(self.feature_names_in_)
+
+        self.model = self.nb_class(**self.kwargs)
+        self.model.fit(X, y)
+
+        self.n_features_in_ = len(self.feature_names_in_)
+        if is_classifier(self.nb_class):
+            self.classes_ = self.model.classes_
+
+        self.X_mins_ = np.min(X, axis=0)
+        self.X_maxs_ = np.max(X, axis=0)
+        self.categorical_uniq_ = {}
+
+        for i, feature_type in enumerate(self.feature_types_in_):
+            self.categorical_uniq_[i] = sorted(set(X[:, i]))
+        
+        unique_val_counts = np.zeros(len(self.feature_names_in_), dtype=np.int64)
+        for col_idx in range(len(self.feature_names_in_)):
+            X_col = X[:, col_idx]
+            unique_val_counts[col_idx] = len(np.unique(X_col))
+
+        # to use in the global explanation
+        self.global_selector_ = gen_global_selector(
+            len(self.feature_names_in_),
+            self.feature_names_in_,
+            self.feature_types_in_,
+            unique_val_counts,
+            None,
+        )
+        self.bin_counts_, self.bin_edges_ = _hist_per_column(X, self.feature_types_in_)
+
+        self.classes_ = self.model.classes_
+
+        self.has_fitted_ = True
+
+        return self
+    
+    def explain_local(self, X, y=None, name=None):
+        """Provides local explanations for provided instances.
+
+        Args:
+            X: Numpy array for X to explain.
+            y: Numpy vector for y to explain.
+            name: User-defined explanation name.
+
+        Returns:
+            An explanation object, visualizing feature-value pairs
+            for each instance as horizontal bar charts.
+        """
+
+        check_is_fitted(self, "has_fitted_")
+
+        if name is None:
+            name = gen_name_from_class(self)
+
+        n_samples = None
+        if y is not None:
+            y = clean_dimensions(y, "y")
+            if y.ndim != 1:
+                msg = "y must be 1 dimensional"
+                raise ValueError(msg)
+            n_samples = len(y)
+
+            if is_classifier(self):
+                y = typify_classification(y)
+            else:
+                y = y.astype(np.float64, copy=False)
+
+        X, n_samples = preclean_X(
+            X, self.feature_names_in_, self.feature_types_in_, n_samples
+        )
+
+        if n_samples == 0:
+            msg = "X cannot have 0 samples"
+            raise ValueError(msg)
+        
+        X, _, _ = unify_data(
+            X, n_samples, self.feature_names_in_, self.feature_types_in_, False, 0
+        )
+
+        model = self._model()
+
+        classes = None
+        is_classification = is_classifier(model)
+
+       # Here starts our modifications (for binary classification)
+        def conditional_probabilities(model, X):
+            cp_0 = np.zeros(X.shape[0])
+            cp_1 = np.zeros(X.shape[0])
+            for j in range(X.shape[0]):
+                cp_0[j] = np.exp(model.feature_log_prob_[j][0][int(X[j])])
+                cp_1[j] = np.exp(model.feature_log_prob_[j][1][int(X[j])])
+            return cp_0, cp_1
+
+        class_0_prior = model.class_count_[0] / model.class_count_.sum()
+        class_1_prior = model.class_count_[1] / model.class_count_.sum()
+        predictions = self.predict_proba(X)
+        intercept = np.log(class_0_prior / class_1_prior)
+
+        data_dicts = []
+        scores_list = []
+        perf_list = []
+        perf_dicts = gen_perf_dicts(predictions, y, is_classification, classes)
+        for i, instance in enumerate(X):
+            c0_cp, c1_cp = conditional_probabilities(model, instance)
+            scores = np.log(c0_cp / c1_cp)
+            scores_list.append(scores)
+            data_dict = {}
+            data_dict["data_type"] = "univariate"
+
+            # Performance related (conditional)
+            perf_dict_obj = None if perf_dicts is None else perf_dicts[i]
+            data_dict["perf"] = perf_dict_obj
+            perf_list.append(perf_dict_obj)
+
+            # Names/scores
+            data_dict["names"] = self.feature_names_in_
+            data_dict["scores"] = scores
+
+            # Values
+            data_dict["values"] = instance
+
+            data_dict["extra"] = {
+                "names": ["Intercept"],
+                "scores": [intercept],
+                "values": [1],
+            }
+            data_dicts.append(data_dict)
+
+        internal_obj = {
+            "overall": None,
+            "specific": data_dicts,
+            "mli": [
+                {
+                    "explanation_type": "local_feature_importance",
+                    "value": {
+                        "scores": scores_list,
+                        "intercept": intercept,
+                        "perf": perf_list,
+                    },
+                }
+            ],
+        }
+        internal_obj["mli"].append(
+            {
+                "explanation_type": "evaluation_dataset",
+                "value": {"dataset": X, "dataset_y": y},
+            }
+        )
+
+        selector = gen_local_selector(data_dicts, is_classification=is_classification)
+
+        return FeatureValueExplanation(
+            "local",
+            internal_obj,
+            feature_names=self.feature_names_in_,
+            feature_types=self.feature_types_in_,
+            name=name,
+            selector=selector,
+        )
+    
+    def explain_global(self, name=None):
+        """Provides global explanation for model.
+
+        Args:
+            name: User-defined explanation name.
+
+        Returns:
+            An explanation object,
+            visualizing feature-value pairs as horizontal bar chart.
+        """
+
+        check_is_fitted(self, "has_fitted_")
+
+        if name is None:
+            name = gen_name_from_class(self)
+
+        model = self._model()
+
+        def get_ratio(model, value, index):
+            cp_0 = np.exp(model.feature_log_prob_[index][0][int(value)])
+            cp_1 = np.exp(model.feature_log_prob_[index][1][int(value)])
+            return np.log(cp_0 / cp_1)
+
+        # Add per feature graph
+        data_dicts = []
+        feature_list = []
+        density_list = []
+        keep_idxs = []
+        for index, _ in enumerate(self.feature_names_in_):
+            keep_idxs.append(index)
+            bin_labels = self.categorical_uniq_[index]
+            histogram_weights = model.category_count_[index]
+            
+            names = bin_labels
+            densities = list(np.array(histogram_weights).sum(axis=0))
+
+            model_graph = [get_ratio(model, x, index) for x in bin_labels]
+
+            scores = list(model_graph)
+
+            density_dict = {
+                "names": names,
+                "scores": densities,
+            }
+
+            feature_dict = {
+                "type": "univariate",
+                "names": bin_labels,
+                "scores": scores,
+                "scores_range": None,
+                "upper_bounds": None,
+                "lower_bounds": None,
+            }
+
+            feature_list.append(feature_dict)
+            density_list.append(density_dict)
+
+            data_dict = {
+                "type": "univariate",
+                "names": bin_labels,
+                "scores": model_graph,
+                "scores_range": None,
+                "upper_bounds": None,
+                "lower_bounds": None,
+                "density": {
+                    "names": names,
+                    "scores": densities,
+                },
+            }
+
+            if hasattr(self, "classes_"):
+                # Classes should be NumPy array, convert to list.
+                data_dict["meta"] = {"label_names": self.classes_.tolist()}
+
+            data_dicts.append(data_dict)
+        
+
+        term_names = self.feature_names_in_
+        term_types = self.feature_types_in_
+
+        # TODO: Implement term_importances for overall_dict
+        #importances = self.term_importances()
+        importances = None
+
+        overall_dict = {
+            "type": "univariate",
+            "names": [term_names[i] for i in keep_idxs],
+            "scores": importances,
+        }
+
+        internal_obj = {
+            "overall": overall_dict,
+            "specific": data_dicts,
+            "mli": [
+                {
+                    "explanation_type": "global_categorical_naive_bayes",
+                    "value": {"feature_list": feature_list},
+                },
+                {"explanation_type": "density", "value": {"density": density_list}},
+            ],
+        }
+
+        return NaiveBayesExplanation(
+            "global",
+            internal_obj,
+            feature_names=[term_names[i] for i in keep_idxs],
+            feature_types=[term_types[i] for i in keep_idxs],
+            name=name,
+            selector=gen_global_selector(
+                self.n_features_in_,
+                [term_names[i] for i in keep_idxs],
+                [term_types[i] for i in keep_idxs],
+                [len(x) for x in self.categorical_uniq_.values()],
+                None,
+            ),
+        )
 
 class NaiveBayesExplanation(FeatureValueExplanation):
     """Visualizes specifically for NB methods."""
@@ -415,59 +821,7 @@ class NaiveBayesExplanation(FeatureValueExplanation):
                 data_dict, title="Overall Importance:<br>Coefficients"
             )
 
-        return super().visualize(key)
-    
-class NaiveBayesClassifier(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
-    """Naive Bayes.
-    
-    Currently wrapper around Naive Bayes in scikit-learn: https://github.com/scikit-learn/scikit-learn
-    """
-
-    def __init__(
-            self, feature_names=None, feature_types=None, nb_class=SKGaussianNB, **kwargs
-    ):
-        """Initializes class.
-        
-        Args:
-            feature_names: List of feature names.
-            feature_types: List of feature types.
-            nb_class: A scikit-learn Gaussian Naive Bayes class.
-            **kwargs: Kwargs pass to Naive Bayes class at initialization time.
-        """
-        super().__init__(feature_names, feature_types, nb_class, **kwargs)
-
-    def _model(self):
-        return self.sk_model_
-    
-    def fit(self, X, y):
-        """Fits model to provided instance.
-        
-        Args:
-            X: Numpy array for training instances.
-            y: Numpy array as training labels.
-        """
-        self.sk_model_ = self.nb_class(**self.kwargs)
-        return super().fit(X, y)
-    
-    def predict_proba(self, X):
-        """Probability estimates on provided instances.
-
-        Args:
-            X: Numpy array for instances.
-
-        Returns:
-            Probability estimate of instance for each class.
-        """
-
-        check_is_fitted(self, "has_fitted_")
-
-        X, n_samples = preclean_X(X, self.feature_names_in_, self.feature_types_in_)
-        X, _, _ = unify_data(
-            X, n_samples, self.feature_names_in_, self.feature_types_in_, False, 0
-        )
-
-        return self.model.predict_proba(X)
-    
+        return super().visualize(key)    
 
 def _hist_per_column(arr, feature_types=None):
     counts = []
