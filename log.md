@@ -1,3 +1,29 @@
+## 2025-02-25
+
+### Summary of the Day
+- Total Hours Worked: 1
+- Main Objective: Continue TFG memory
+
+### Tasks Completed
+1. Completed TAN section
+2. Started BN section
+
+### In-Progress
+- Global Explanation Summary (not individual feature functions) of every model
+- Explore TAN model
+- Explora BN model
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Read about TAN and BNs, maybe creating a notebook
+- Continue TFG Memory
+
+### Issues/Blockers
+- Difficulty adapting the NAM wrapper to InterpretML because NAM model lacks many of the standard attributes of InterpretML models. So many modifications were made to NAM wrapper, though it worked.
+- What type of features are assumed by each model?
+
+---
+
 ## 2025-02-24
 
 ### Summary of the Day
