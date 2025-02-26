@@ -1,6 +1,65 @@
 
 # Weekly Progress Meeting Minutes
 
+**Date:** 2025-02-27
+
+---
+
+## 1. Summary of Weekly Progress  
+
+- **Main Objectives:** Merge Naive Bayes files and start reading about TANs and NBs
+- **Key Accomplishments:**
+  - Merge CategoricalNB and GaussianNB into one file, one individual class for each one
+  - Reorganized NAM code adapting it to InterpretML structure.
+  - Read about TANs and BNs
+  - Try some python libraries with TAN and NB
+  - Continued TFG Memory
+- **Overall Status:** On Track  
+
+## 2. Task Summary  
+
+| Task                                   | Status     | Time Spent | Summary                                                                                  |  
+|----------------------------------------|------------|------------|------------------------------------------------------------------------------------------|  
+| Merge both NBs into one file | Completed | 1.5h | Both inherit from BaseNaiveBayes class and had different methods |  
+| Reorganized NAMs code | Completed | 2h | Finally made the wrapper similar to the rest of models in the library |  
+| Read about TANs and BNs | Completed | 1.5h | Explore some articles and papers about it |  
+| Explore and try python libraries that support TAN and NB | Completed | 1.5h | There exist different libraries but there's not an standard (as sklearn) |  
+| Continued "Memoria TFG" | In progress | 1h | Read and wrote about Naive Bayes, TANs and BNs |  
+
+## 3. Challenges/Issues  
+
+- **Issue 1**: **Handling Different Feature Types in Naive Bayes Models**  
+  - **Impact**: The base models I used as a base for Naive Bayes supported both continuous and categorical features. However, adapting them to work with InterpretML required modifying some of its built-in attributes and functions, which caused difficulties.   
+  - **Proposed Solution**: Customize each Naive Bayes model to properly handle the type.
+
+- **Issue 2**: **Limited Attributes and Methods in the Original NAM Wrapper**  
+  - **Impact**:  The NAM model is well-designed, but its original wrapper lacks many attributes and methods necessary for a smooth adaptation to InterpretML. This required removing and adding several elements to make it compatible. 
+  - **Proposed Solution**: Expand and refine the wrapper to improve its integration with InterpretML.  
+
+- **Issue 3**: **Lack of a Standard Library for TANs and Bayesian Networks in Python**
+  - **Impact**: There is no widely accepted standard library for Tree-Augmented Naive Bayes (TANs) and Bayesian Networks in Python. Several libraries, such as pgmpy, have been tested, but none provided a seamless implementation for this project.
+  - **Proposed Solution**: Explore different libraries and consider implementing custom solutions to ensure compatibility with InterpretML.
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** 
+- **Goal 2:** 
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
+
+# Weekly Progress Meeting Minutes
+
 **Date:** 2025-02-20
 
 ---
