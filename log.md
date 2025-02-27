@@ -1,3 +1,32 @@
+## 2025-02-27
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Rewrite NAM global viz function and try pyAgrum
+
+### Tasks Completed
+1. Rewrite plot function on NAM model to increase the limits and see the behaviour beyond max and min.
+2. Try pyAgrum and BNClassifier Class
+
+### In-Progress
+- Global Explanation Summary (not individual feature functions) of every model
+- Explore TAN model
+- Explore BN model
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Keep going with the notebook using pyAgrum
+- Overall importance on categorical models (CatNB)
+- Explore the intercept attribute on NAM model
+- Continue TFG Memory
+
+### Issues/Blockers
+- Difficulty adapting the NAM wrapper to InterpretML because NAM model lacks many of the standard attributes of InterpretML models. So many modifications were made to NAM wrapper, though it worked.
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+
+---
+
 ## 2025-02-25
 
 ### Summary of the Day

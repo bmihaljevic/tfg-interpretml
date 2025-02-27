@@ -234,10 +234,11 @@ class NAMBase:
         return predictions / self.num_learners
 
     def plot(self, feature_index) -> None:
-        num_samples = 1000
+        num_samples = 3000
         X = np.zeros((num_samples, self.num_inputs))
-        X[:, feature_index] = np.linspace(self.X_mins_[feature_index], self.X_maxs_[feature_index], num_samples)
-        # X[:, feature_index] = np.linspace(-1.0, 1.0, num_samples)
+        #X[:, feature_index] = np.linspace(self.X_mins_[feature_index], self.X_maxs_[feature_index], num_samples)
+        amplification = 0.1 * (self.X_maxs_[feature_index] - self.X_mins_[feature_index])
+        X[:, feature_index] = np.linspace(self.X_mins_[feature_index] - amplification, self.X_maxs_[feature_index] + amplification, num_samples)        
         
         feature_outputs = []
         for model in self.models:
