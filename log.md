@@ -1,3 +1,32 @@
+## 2025-02-28
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Rewrite NAM global viz function and try pyAgrum
+
+### Tasks Completed
+1. Calculate CategoricalNB overall importances
+2. Search if pyAgrum allows the calculation of the interpretability ratios
+3. Try these functionalities in a notebook example 
+
+### In-Progress
+- Global Explanation Summary for GaussianNB and NAM
+- Integrate TAN model in our library
+- Explore BN model
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Keep going with the notebook using pyAgrum
+- Explore the intercept attribute on NAM model
+- Continue TFG Memory
+
+### Issues/Blockers
+- Difficulty adapting the NAM wrapper to InterpretML because NAM model lacks many of the standard attributes of InterpretML models. So many modifications were made to NAM wrapper, though it worked.
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+
+---
+
 ## 2025-02-27
 
 ### Summary of the Day
