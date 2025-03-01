@@ -638,6 +638,7 @@ class CategoricalNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
         feature_list = []
         density_list = []
         keep_idxs = []
+        importances = []
         for index, _ in enumerate(self.feature_names_in_):
             keep_idxs.append(index)
             bin_labels = self.categorical_uniq_[index]
@@ -649,6 +650,11 @@ class CategoricalNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
             model_graph = [get_ratio(model, x, index) for x in bin_labels]
 
             scores = list(model_graph)
+
+            importance = sum([(d / sum(densities))*abs(s)
+                              for d,s in zip(densities, scores)
+                              if d > 0])
+            importances.append(importance)
 
             density_dict = {
                 "names": names,
@@ -670,7 +676,7 @@ class CategoricalNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
             data_dict = {
                 "type": "univariate",
                 "names": bin_labels,
-                "scores": model_graph,
+                "scores": scores,
                 "scores_range": None,
                 "upper_bounds": None,
                 "lower_bounds": None,
@@ -689,10 +695,6 @@ class CategoricalNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
 
         term_names = self.feature_names_in_
         term_types = self.feature_types_in_
-
-        # TODO: Implement term_importances for overall_dict
-        #importances = self.term_importances()
-        importances = None
 
         overall_dict = {
             "type": "univariate",
@@ -818,7 +820,7 @@ class NaiveBayesExplanation(FeatureValueExplanation):
                 data_dict, sort_fn=lambda x: -abs(x), top_n=15, reverse_results=True
             )
             return plot_horizontal_bar(
-                data_dict, title="Overall Importance:<br>Coefficients"
+                data_dict, title="Overall Importance:<br>Coefficients", start_zero=True
             )
 
         return super().visualize(key)    
