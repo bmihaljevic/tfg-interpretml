@@ -249,7 +249,7 @@ class GaussianNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
 
         model = self._model()
 
-        classes = None
+        classes = np.array([0, 1], np.int64)
         is_classification = is_classifier(self)
 
         # Here starts our modifications (for binary classification)
@@ -294,6 +294,9 @@ class GaussianNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
                 "scores": [intercept],
                 "values": [1],
             }
+
+            data_dict["meta"] = {"label_names": classes.tolist()}
+
             data_dicts.append(data_dict)
 
         internal_obj = {
@@ -531,7 +534,7 @@ class CategoricalNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
 
         model = self._model()
 
-        classes = None
+        classes = np.array([0, 1], np.int64)
         is_classification = is_classifier(model)
 
        # Here starts our modifications (for binary classification)
@@ -576,6 +579,9 @@ class CategoricalNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
                 "scores": [intercept],
                 "values": [1],
             }
+
+            data_dict["meta"] = {"label_names": classes.tolist()}
+
             data_dicts.append(data_dict)
 
         internal_obj = {

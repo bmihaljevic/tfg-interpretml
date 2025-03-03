@@ -313,11 +313,13 @@ class NAMBase:
             X, n_samples, self.feature_names_in_, self.feature_types_in_, False, 0
         )
         
-        classes = None
+        classes = np.array([0, 1], np.int64)
         is_classification = is_classifier(self)
 
         predictions = self.predict_proba(X).squeeze()
         individual_preds = self.get_contributions(X)
+
+        intercept = np.mean([m._bias.item() for m in self.models])
 
         data_dicts = []
         scores_list = []
@@ -341,12 +343,14 @@ class NAMBase:
             # Values
             data_dict["values"] = instance
 
-            # TODO: intercept?
             data_dict["extra"] = {
                 "names": ["Intercept"],
-                "scores": [0.5],
+                "scores": [intercept],
                 "values": [1],
             }
+
+            data_dict["meta"] = {"label_names": classes.tolist()}
+
             data_dicts.append(data_dict)
         
         internal_obj = {
@@ -357,8 +361,7 @@ class NAMBase:
                     "explanation_type": "local_feature_importance",
                     "value": {
                         "scores": scores_list,
-                        # TODO: intercept?
-                        "intercept": 0.5,
+                        "intercept": intercept,
                         "perf": perf_list,
                     },
                 }

@@ -1,3 +1,31 @@
+## 2025-03-03
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Use NAM bias, check local visualizations and work on TAN probabilities
+
+### Tasks Completed
+1. NAM `_bias` attribute now is used and showed in local explanation visualizations
+2. Check which class was the positive and the negative in NB and NAM, complementing the visualization
+3. Work on TAN probabilities, calculating the ratio and visualizing a heat map for the interactions
+
+### In-Progress
+- Global Explanation Summary for GaussianNB and NAM
+- Integrate TAN model in our library
+- Explore BN model
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Start integrating TAN model
+- Continue TFG Memory
+
+### Issues/Blockers
+- Difficulty adapting the NAM wrapper to InterpretML because NAM model lacks many of the standard attributes of InterpretML models. So many modifications were made to NAM wrapper, though it worked.
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+
+---
+
 ## 2025-02-28
 
 ### Summary of the Day
