@@ -1,3 +1,33 @@
+## 2025-03-04
+
+### Summary of the Day
+- Total Hours Worked: 2.5
+- Main Objective: Start TAN integration and continue TFG Memory
+
+### Tasks Completed
+1. Write about GAM models (EBM, NAM) on TFG Memory
+2. Create TAN file (_tan.py) to integrate the pyAgrum model, as it has the parameters we need
+3. Try our TAN model in a notebook 
+
+### In-Progress
+- Global Explanation Summary for GaussianNB and NAM
+- Integrate TAN model in our library
+- Explore BN model
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Start local explanations in TAN model
+- Explore global explanations in TAN model
+- Continue TFG Memory
+
+### Issues/Blockers
+- Difficulty adapting the NAM wrapper to InterpretML because NAM model lacks many of the standard attributes of InterpretML models. So many modifications were made to NAM wrapper, though it worked.
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
 ## 2025-03-03
 
 ### Summary of the Day
