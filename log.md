@@ -1,3 +1,32 @@
+## 2025-03-05
+
+### Summary of the Day
+- Total Hours Worked: 1
+- Main Objective: Work on getting the conditional probabilities of TAN 
+
+### Tasks Completed
+1. Explored the parameters I need in the conditional probabilities
+2. Calculate also those parameters manually
+
+### In-Progress
+- Global Explanation Summary for GaussianNB and NAM
+- Integrate TAN model in our library
+- Explore BN model
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Start local explanations in TAN model
+- Explore global explanations in TAN model
+- Continue TFG Memory
+
+### Issues/Blockers
+- Difficulty adapting the NAM wrapper to InterpretML because NAM model lacks many of the standard attributes of InterpretML models. So many modifications were made to NAM wrapper, though it worked.
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
 ## 2025-03-04
 
 ### Summary of the Day
@@ -60,7 +89,7 @@
 
 ### Summary of the Day
 - Total Hours Worked: 2
-- Main Objective: Rewrite NAM global viz function and try pyAgrum
+- Main Objective: Complete CatNB overall importances and use pyAgrum
 
 ### Tasks Completed
 1. Calculate CategoricalNB overall importances

@@ -1,3 +1,67 @@
+# Weekly Progress Meeting Minutes
+
+**Date:** 2025-03-05
+
+---
+
+## 1. Summary of Weekly Progress  
+
+- **Main Objectives:** Work on conditional probabilities of TAN, start integrating the TAN model, and progress with TFG Memory
+- **Key Accomplishments:**
+  - Completed NAM visualization beyond the limits marked by data
+  - Created Categorical NB overall importances 
+  - Explored pyAgrum functions for integrating TAN model
+  - Started TAN file
+  - Continued writing and researching for TFG Memory
+- **Overall Status:** On Track  
+
+## 2. Task Summary  
+
+| Task                                   | Status     | Time Spent | Summary                                                                                  |  
+|----------------------------------------|------------|------------|------------------------------------------------------------------------------------------|  
+| Complete NAM wrapper visualization and intercept | Completed | 1.5h | Extend the visualization beyond the limits and use the intercept in the visualizations |  
+| Create overall importances for CatNB | Completed | 1h | As we discussed in the meeting, I created the overall importances |  
+| Explore different python libraries for TAN and BN | Completed | 1h | Investigate various libraries as pgmpy or pyAgrum and its functionalities. |  
+| Explore pyAgrum TAN | In progress | 2h | Explored parameters and computed conditional probabilities for TAN model. |  
+| Integrate TAN model in the library | In progress | 2h | Created TAN file with pyAgrum implementation and tested our TAN model. |  
+| Local and global explanations for TAN model | In progress | 1h | Started working on local explanations for the TAN model. |  
+| Write about Naive Bayes and TAN models in TFG Memory | In progress | 2h | Continued writing content on Naive Bayes and TAN models for TFG. |  
+
+## 3. Challenges/Issues  
+
+- **Issue 1**: **Lack of Standard Python Libraries for TAN and Bayesian Networks**  
+  - **Impact**: Found that libraries like pgmpy and pyAgrum had compatibility issues with our requirements for a seamless integration with InterpretML.  
+  - **Proposed Solution**: Explore and test different libraries or implement custom solutions to fill the gaps.  
+
+- **Issue 2**: **Installation and Dependency Issues with pyAgrum**  
+  - **Impact**: pyAgrum required Graphviz and additional dependencies, which led to installation errors.  
+  - **Proposed Solution**: Investigate and resolve the installation issues, including resolving dependencies for pyAgrum.  
+
+- **Issue 3**: **Kernel Error with TAN Model in Notebook**  
+  - **Impact**: Encountered a kernel error when trying to use the TAN model without importing pyAgrum.  
+  - **Proposed Solution**: Investigate the kernel issue to allow smoother usage in notebooks.
+  
+- **Issue 4**: **Problem with ie.evidenceimpact() function**  
+  - **Impact**: This function is useful for getting the conditional probabilities in TAN model, and is not working as expected.  
+  - **Proposed Solution**: Manual CPT calculation.
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** 
+- **Goal 2:** 
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
 
 # Weekly Progress Meeting Minutes
 
