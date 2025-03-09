@@ -6,7 +6,7 @@ As it Github page says:
 
 ---
 
-### Objective of this Extension
+## Objective of this Extension
 
 Currently, InterpretML implements several interpretable models, such as Explainable Boosting Machines (EBMs), decision trees, and linear models, along with various explanation techniques for blackbox models.
 
@@ -14,7 +14,7 @@ This extension aims to expand InterpretML by integrating probabilistic models wh
 
 ---
 
-### How InterpretML visualize glassbox models?
+## How InterpretML visualize glassbox models?
 
 InterpretML uses two main ways to explain these type of models:
 
@@ -37,7 +37,7 @@ The main goal will be to use both global and local visualizations for different 
 
 ---
 
-### Adding new models
+## Adding new models
 
 The new models incorporated in this extension are:
 
@@ -50,6 +50,3 @@ The new models incorporated in this extension are:
 - **NAM** (Neural Additive Model): A neural network-based approach that extends Generalized Additive Models (GAMs) by learning feature contributions in a flexible and interpretable manner.
 
 These models will be integrated with InterpretML's existing explanation mechanisms, ensuring users can interpret their predictions using global and local explanations.
-
----
-
