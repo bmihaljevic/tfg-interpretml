@@ -24,7 +24,7 @@ InterpretML uses two main ways to explain these type of models:
   <img width="700" align="center" alt="Image" src="https://github.com/user-attachments/assets/8891b574-9e1d-488c-afee-4caef393f98a" />
 </p>
 
-<br><br>
+<br>
 
 - **Local Explanations**: These explanations focus on **individual predictions**, showing why the model made a specific decision for a given instance.
 
