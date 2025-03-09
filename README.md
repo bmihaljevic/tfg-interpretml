@@ -20,14 +20,17 @@ InterpretML uses two main ways to explain these type of models:
 
 - **Global Explanations**: These explanations provide insights into how a model makes predictions across the **entire dataset**. Example: How the score 
 
-<img width="700" align="center" alt="Image" src="https://github.com/user-attachments/assets/8891b574-9e1d-488c-afee-4caef393f98a" />
+<p align="center">
+  <img width="700" align="center" alt="Image" src="https://github.com/user-attachments/assets/8891b574-9e1d-488c-afee-4caef393f98a" />
+</p>
 
-<br>
+<br><br>
 
 - **Local Explanations**: These explanations focus on **individual predictions**, showing why the model made a specific decision for a given instance.
 
-<img width="700" align="center" alt="Image" src="https://github.com/user-attachments/assets/51e6264e-83a4-4690-8ebf-c687d2ede98a" />
-
+<p align="center">
+  <img width="700" align="center" alt="Image" src="https://github.com/user-attachments/assets/51e6264e-83a4-4690-8ebf-c687d2ede98a" />
+</p>
 <br>
 
 The main goal will be to use both global and local visualizations for different models that InterpretML does not currently implement.
