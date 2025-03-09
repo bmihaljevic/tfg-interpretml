@@ -20,13 +20,13 @@ InterpretML uses two main ways to explain these type of models:
 
 - **Global Explanations**: These explanations provide insights into how a model makes predictions across the **entire dataset**. Example: How the score 
 
-<img width="598" alt="Image" src="https://github.com/user-attachments/assets/8891b574-9e1d-488c-afee-4caef393f98a" />
+<img width="700" align="center" alt="Image" src="https://github.com/user-attachments/assets/8891b574-9e1d-488c-afee-4caef393f98a" />
 
 <br>
 
 - **Local Explanations**: These explanations focus on **individual predictions**, showing why the model made a specific decision for a given instance.
 
-![Local Explanation Image](/localExplanations.png)
+<img width="700" align="center" alt="Image" src="https://github.com/user-attachments/assets/51e6264e-83a4-4690-8ebf-c687d2ede98a" />
 
 <br>
 
