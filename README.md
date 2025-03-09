@@ -4,6 +4,10 @@ As it Github page says:
 
 "**InterpretML** is an open-source package that incorporates state-of-the-art machine learning **interpretability techniques** under one roof. With this package, you can train interpretable glassbox models and explain blackbox systems. InterpretML helps you understand your model's global behavior, or understand the reasons behind individual predictions."
 
+## Installation
+
+TODO
+
 ## Objective of this Extension
 
 Currently, InterpretML implements several interpretable models, such as Explainable Boosting Machines (EBMs), decision trees, and linear models, along with various explanation techniques for blackbox models.
