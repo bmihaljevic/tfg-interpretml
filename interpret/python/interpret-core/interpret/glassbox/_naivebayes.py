@@ -349,11 +349,22 @@ class GaussianNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
 
         model = self._model()
 
+        # TO DELETE
         def get_ratio(model, value, index):
             class_0_cp = np.exp(-0.5 * ((value - model.theta_[0, index]) ** 2) / (model.var_[0, index])) / (np.sqrt(2 * np.pi * model.var_[0, index]))
             class_1_cp = np.exp(-0.5 * ((value - model.theta_[1, index]) ** 2) / (model.var_[1, index])) / (np.sqrt(2 * np.pi * model.var_[1, index]))
             return np.log(class_1_cp / class_0_cp)
-        
+
+        def get_ratio_modified(model, value, index):
+            numerator_term_0 = ((value - model.theta_[0, index]) ** 2) / (model.var_[0, index])
+            denominator_term_0 = np.sqrt(model.var_[0, index])
+
+            numerator_term_1 = ((value - model.theta_[1, index]) ** 2) / (model.var_[1, index])
+            denominator_term_1 = np.sqrt(model.var_[1, index])
+
+            log_ratio = -0.5 * (numerator_term_1 - numerator_term_0) + np.log(denominator_term_0 / denominator_term_1)
+            return log_ratio
+    
         keep_idxs = []
         specific_data_dicts = []
         for index, _ in enumerate(self.feature_names_in_):
@@ -363,7 +374,7 @@ class GaussianNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
             max_feature_val = self.X_maxs_[index]
             
             grid_points = np.linspace(min_feature_val, max_feature_val, 5000)
-            model_graph = [get_ratio(model, val, index) for val in grid_points]
+            model_graph = [get_ratio_modified(model, val, index) for val in grid_points]
 
             y_scores = model_graph
 
@@ -537,7 +548,6 @@ class CategoricalNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
         classes = np.array([0, 1], np.int64)
         is_classification = is_classifier(model)
 
-       # Here starts our modifications (for binary classification)
         def conditional_probabilities(model, X):
             cp_0 = np.zeros(X.shape[0])
             cp_1 = np.zeros(X.shape[0])

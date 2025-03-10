@@ -1,8 +1,6 @@
 - General importances of the features (global explanation summary)
-- Reorganise NAM wrapper code, adding every interpretml feature (hard-coded diabetes features)
-- Read about Tree Augmented Naive Bayes (TAN)
-- Read about Bayesian Networks
-- Are GaussianNB features considered continuous? What about CategoricalNB?
-- Review Gaussian Global Contributions
-- Review visualization details of GaussianNB
-- Review visualization details of CategoricalNB
+- Code setup.py
+- Unify environments and avoid NAM import problems.
+- Complete README.md
+- Add notebooks to /docs
+- Integrate TAN model
