@@ -1,3 +1,34 @@
+## 2025-03-11
+
+### Summary of the Day
+- Total Hours Worked: 1.5
+- Main Objective: Work on TAN integration
+
+### Tasks Completed
+1. Explore cpt TAN parameter 
+2. Complete basic `explain_global` TAN function
+
+### In-Progress
+- Try to create a unique environment to execute NB, TAN and NAM notebooks with the same versions
+- Develop setup.py
+- Integrate TAN
+- Explore BN model
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Investigate the dependencies of NAM
+- Start local explanations in TAN model
+- Explore global explanations in TAN model
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+- NAM dependencies
+
+---
+
 ## 2025-03-10
 
 ### Summary of the Day

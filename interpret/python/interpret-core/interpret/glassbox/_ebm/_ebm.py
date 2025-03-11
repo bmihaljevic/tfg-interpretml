@@ -1675,7 +1675,7 @@ class EBMModel(BaseEstimator):
                     )
                 else:
                     keep_idxs.append(term_idx)
-
+                    print(feature_idxs)
                     bin_levels = self.bins_[feature_idxs[0]]
                     feature_bins = bin_levels[
                         min(len(feature_idxs), len(bin_levels)) - 1

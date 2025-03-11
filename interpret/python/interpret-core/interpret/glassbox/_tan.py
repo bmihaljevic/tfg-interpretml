@@ -92,9 +92,19 @@ class BaseTAN:
         X, self.feature_names_in_, self.feature_types_in_ = unify_data(
             X, n_samples, self.feature_names, self.feature_types, False, 0
         )
-
+        
         model = self._model()
         model.fit(X, y)
+
+        print(self.feature_names)
+        print(self.feature_names_in_)
+        print(model.bn.names())
+
+        self.target = model.target
+
+        self.parents = {}
+        for i, feature in enumerate(self.feature_names_in_):
+            self.parents[feature] = model.bn.parents(feature)
 
         self.n_features_in_ = len(self.feature_names_in_)
         if is_classifier(self):
@@ -284,13 +294,23 @@ class BaseTAN:
             name = gen_name_from_class(self)
 
         model = self._model()
-        if is_classifier(self):
-            intercept = model.intercept_[0]
-            coef = model.coef_[0]
-        else:
-            intercept = model.intercept_
-            coef = model.coef_
 
+        # TODO
+        intercept = 0
+        coef = []
+
+        def calculate_model_graph(feat_cpt):
+            ratios_class_0 = feat_cpt[0, :, :]
+            ratios_class_1 = feat_cpt[1, :, :]
+
+            # TODO: check if this is correct (maybe class_0 and class_1 should be swapped)
+            return np.log(ratios_class_1 / ratios_class_0)
+        
+        def get_ratio(model, value, index):
+            cp_0 = np.exp(model.feature_log_prob_[index][0][int(value)])
+            cp_1 = np.exp(model.feature_log_prob_[index][1][int(value)])
+            return np.log(cp_0 / cp_1)
+        
         overall_data_dict = {
             "names": self.feature_names_in_,
             "scores": list(coef),
@@ -298,12 +318,16 @@ class BaseTAN:
         }
 
         specific_data_dicts = []
+        feature_list = []
         for index, _feature in enumerate(self.feature_names_in_):
+            feat_parents = self.parents[_feature]
+            feat_cpt = model.bn.cpt(_feature)
+                        
             feat_min = self.X_mins_[index]
             feat_max = self.X_maxs_[index]
-            feat_coef = coef[index]
-
             feat_type = self.feature_types_in_[index]
+
+            bounds = (feat_min, feat_max)
 
             if feat_type == "continuous":
                 # Generate x, y points to plot from coef for continuous features
@@ -311,7 +335,72 @@ class BaseTAN:
             else:
                 grid_points = np.array(self.categorical_uniq_[index])
 
-            y_scores = feat_coef * grid_points
+            if len(feat_parents) == 1:
+                bin_labels = self.categorical_uniq_[index]
+
+                names = bin_labels
+
+                model_graph = [get_ratio(model, x, index) for x in bin_labels]
+
+                scores = list(model_graph)
+
+                feature_dict = {
+                    "type": "univariate",
+                    "names": bin_labels,
+                    "scores": scores,
+                    "scores_range": None,
+                    "upper_bounds": None,
+                    "lower_bounds": None,
+                }
+
+                feature_list.append(feature_dict)
+
+                data_dict = {
+                    "type": "univariate",
+                    "names": bin_labels,
+                    "scores": scores,
+                    "scores_range": None,
+                    "upper_bounds": None,
+                    "lower_bounds": None,
+                    "density": {
+                        "names": names,
+                        #"scores": densities,
+                    },
+                }
+
+                if hasattr(self, "classes_"):
+                    # Classes should be NumPy array, convert to list.
+                    data_dict["meta"] = {"label_names": self.classes_.tolist()}
+
+                specific_data_dicts.append(data_dict)
+
+                
+            elif len(feat_parents) == 2:
+                bin_labels_left = self.categorical_uniq_[feat_parents[0]]
+
+                direct_parent = model.bn.parents(_feature) - {model.bn.idFromName(self.target)}
+                bin_labels_right = self.categorical_uniq_[direct_parent]
+
+                model_graph = calculate_model_graph(feat_cpt)
+
+                feature_dict = {
+                    "type": "interaction",
+                    "left_names": bin_labels_left,
+                    "right_names": bin_labels_right,
+                    "scores": model_graph,
+                    "scores_range": bounds,
+                }
+                feature_list.append(feature_dict)
+
+                data_dict = {
+                    "type": "interaction",
+                    "left_names": bin_labels_left,
+                    "right_names": bin_labels_right,
+                    "scores": model_graph,
+                    "scores_range": bounds,
+                }
+            
+            y_scores = None
 
             data_dict = {
                 "names": grid_points,
@@ -329,10 +418,10 @@ class BaseTAN:
             "specific": specific_data_dicts,
             "mli": [
                 {
-                    "explanation_type": "global_feature_importance",
-                    "value": {"scores": list(coef), "intercept": intercept},
+                    "explanation_type": "ebm_global",
+                    "value": {"feature_list": feature_list},
                 }
-            ],
+           ],
         }
         return TANExplanation(
             "global",
