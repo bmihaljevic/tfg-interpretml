@@ -1,5 +1,63 @@
 # Weekly Progress Meeting Minutes
 
+**Date:** 2025-03-12
+
+---
+
+## 1. Summary of Weekly Progress  
+
+- **Main Objectives:** Start integrating TAN model, modify CatNB `get_ratio` and think about the repo as a library
+- **Key Accomplishments:**
+  - Complete TAN global visualization
+  - Modify `get_ratio` function of CatNB as we discussed in the meeting
+  - Create README.md and try to unify environments
+- **Overall Status:** On Track  
+
+## 2. Task Summary  
+
+| Task                                   | Status     | Time Spent | Summary                                                                                  |  
+|----------------------------------------|------------|------------|------------------------------------------------------------------------------------------|  
+| Create TAN file | Completed | 1.5h | Create TAN file, adding its convenient parameters and methods and adapting pyAgrum model to InterpretML |  
+| Comprehend cond. probs in TAN | Completed | 1.5h | Investigate TAN parameters and try them in a notebook |  
+| Visualize TAN global explanations | Completed | 2h | Achieve visualize interactions as heatmaps as EBM model |  
+| Modify `get_ratio` CatNB function | Completed | 1h | Extend the formula and modify the function to avoid exponentials |
+| Create README.md and setup.py | In progress | 1.5h | Start README file, explaining what is InterpretML and how we will extend it. Create setup.py v1 and explore how it works |
+| Try to unify environments because of NAM dependencies | In progress | 1.5h | I was not able to do it as NAM dependencies seems to be very problematic |
+
+## 3. Challenges/Issues  
+
+- **Issue 1**: **Installation and Dependency Issues with pyAgrum**  
+  - **Impact**: pyAgrum required Graphviz and additional dependencies, which led to installation errors.  
+  - **Proposed Solution**: Investigate and resolve the installation issues, including resolving dependencies for pyAgrum.  
+
+- **Issue 2**: **Kernel Error with TAN Model in Notebook**  
+  - **Impact**: Encountered a kernel error when trying to use the TAN model without importing pyAgrum.  
+  - **Proposed Solution**: Investigate the kernel issue to allow smoother usage in notebooks.
+  
+- **Issue 3**: **NAM dependencies are very problematic**
+  - **Impact**: NAM dependencies (specially torch and tensorboard) seem to be difficult to integrate with the rest.
+  - **Proposed Solution**: Modify NAM code trying to update it to more recent versions of the libraries. 
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** 
+- **Goal 2:** 
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
+
+# Weekly Progress Meeting Minutes
+
 **Date:** 2025-03-05
 
 ---
