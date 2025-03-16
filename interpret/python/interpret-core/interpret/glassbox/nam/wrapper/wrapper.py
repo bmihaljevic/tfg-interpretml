@@ -9,12 +9,12 @@ import scipy
 from sklearn.exceptions import NotFittedError
 import torch
 
-from nam.data import NAMDataset
-from nam.models import NAM, MultiTaskNAM
-from nam.models import get_num_units
-from nam.models.saver import Checkpointer
-from nam.trainer import Trainer
-from nam.trainer.losses import make_penalized_loss_func
+from ...nam.data import NAMDataset
+from ...nam.models import NAM, MultiTaskNAM
+from ...nam.models import get_num_units
+from ...nam.models.saver import Checkpointer
+from ...nam.trainer import Trainer
+from ...nam.trainer.losses import make_penalized_loss_func
 
 from sklearn.base import ClassifierMixin, is_classifier
 from sklearn.utils.validation import check_is_fitted
@@ -391,12 +391,15 @@ class NAMBase:
         if name is None:
             name = gen_name_from_class(self)
 
+        intercept = np.mean([m._bias.item() for m in self.models])
+
         specific_data_dicts = []
         overall_scores = []
         for index, _ in enumerate(self.feature_names_in_):
             plot = self.plot(index)
             grid_points = plot['x']
             y_scores = plot['y']
+
             # TODO: Modify overall scores
             overall_scores.append(np.std(y_scores))
 
@@ -415,7 +418,7 @@ class NAMBase:
         overall_data_dict = {
             "names": self.feature_names_in_,
             "scores": list(overall_scores),
-            "extra": {"names": ["Intercept"], "scores": [0.5]},
+            "extra": {"names": ["Intercept"], "scores": [intercept]},
         }
 
         internal_obj = {
@@ -425,7 +428,7 @@ class NAMBase:
                 {
                     # TODO: What is this?
                     "explanation_type": "global_feature_importance",
-                    "value": {"scores": list(y_scores), "intercept": 0.5},
+                    "value": {"scores": list(y_scores), "intercept": intercept},
                 }
             ],
         }

@@ -4,7 +4,7 @@ from typing import Tuple
 import torch
 import torch.nn as nn
 
-from nam.models.featurenn import FeatureNN, MultiFeatureNN
+from ...nam.models.featurenn import FeatureNN, MultiFeatureNN
 
 
 class NAM(torch.nn.Module):

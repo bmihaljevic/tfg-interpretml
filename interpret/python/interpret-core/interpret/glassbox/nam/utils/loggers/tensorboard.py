@@ -5,7 +5,7 @@ import time
 
 from torch.utils.tensorboard import SummaryWriter
 
-from nam.utils.loggers import base
+from ....nam.utils.loggers import base
 
 
 def _format_key(key: str) -> str:

@@ -10,10 +10,10 @@ import torch.nn as nn
 import torch.optim as optim
 from tqdm.autonotebook import tqdm
 
-from nam.trainer.metrics import Metric
-from nam.models.saver import Checkpointer
-from nam.trainer.metrics import *
-from nam.utils.loggers import TensorBoardLogger
+from ...nam.trainer.metrics import Metric
+from ...nam.models.saver import Checkpointer
+from ...nam.trainer.metrics import *
+from ...nam.utils.loggers import TensorBoardLogger
 from torch.utils.data import DataLoader, Subset
 from torch.utils.data import random_split
 

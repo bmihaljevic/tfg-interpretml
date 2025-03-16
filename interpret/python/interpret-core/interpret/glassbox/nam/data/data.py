@@ -3,7 +3,7 @@ from typing import Tuple, Union
 from numpy.typing import ArrayLike
 import pandas as pd
 import torch
-
+import numpy as np
 
 class NAMDataset(torch.utils.data.Dataset):
 
@@ -23,6 +23,9 @@ class NAMDataset(torch.utils.data.Dataset):
         if isinstance(y, (pd.DataFrame, pd.Series)):
             y = y.to_numpy()
             
+        X = np.array(X, dtype=np.float32)
+        y = np.array(y, dtype=np.float32)
+        
         self.X = torch.tensor(X, requires_grad=False, dtype=torch.float)
         self.y = torch.tensor(y, requires_grad=False, dtype=torch.float)
 

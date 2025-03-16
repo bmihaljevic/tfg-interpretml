@@ -3,7 +3,7 @@
 import torch
 import wandb
 
-from nam.utils.loggers import base
+from ....nam.utils.loggers import base
 
 
 class WandBLogger(base.Logger):
