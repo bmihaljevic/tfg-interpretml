@@ -41,6 +41,8 @@ The new models incorporated in this extension are:
 
 - **Naive Bayes** (Gaussian and Categorical): A simple yet powerful probabilistic model based on Bayes' theorem. It assumes feature independence, making it highly efficient for classification tasks.
 
+- **Linear Discriminant Model**: A classification model that finds the linear combination of features that best separates two or more classes. It is particularly useful for dimensionality reduction while preserving class separability.
+
 - **TAN** (Tree Augmented Naive Bayes): An extension of Naive Bayes that allows for dependencies between features using a tree structure, improving its expressiveness while maintaining efficiency.
 
 - **Bayesian Network**: A probabilistic graphical model that represents variables and their conditional dependencies via a directed acyclic graph (DAG). It is useful for modeling complex probabilistic relationships.

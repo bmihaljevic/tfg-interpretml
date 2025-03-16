@@ -434,8 +434,7 @@ class BaseTAN:
                 }
            ],
         }
-        print(term_names)
-        print([term_names[i] for i in keep_idxs])
+
         return TANExplanation(
             "global",
             internal_obj,
@@ -452,103 +451,6 @@ class BaseTAN:
             ,
         )
 
-
-# class TANExplanation(FeatureValueExplanation):
-#     """Visualizes specifically for TAN method."""
-
-#     explanation_type = None
-
-#     def __init__(
-#         self,
-#         explanation_type,
-#         internal_obj,
-#         feature_names=None,
-#         feature_types=None,
-#         name=None,
-#         selector=None,
-#     ):
-#         """Initializes class.
-
-#         Args:
-#             explanation_type:  Type of explanation.
-#             internal_obj: A jsonable object that backs the explanation.
-#             feature_names: List of feature names.
-#             feature_types: List of feature types.
-#             name: User-defined name of explanation.
-#             selector: A dataframe whose indices correspond to explanation entries.
-#         """
-
-#         super().__init__(
-#             explanation_type,
-#             internal_obj,
-#             feature_names=feature_names,
-#             feature_types=feature_types,
-#             name=name,
-#             selector=selector,
-#         )
-
-#     def visualize(self, key=None):
-#         """Provides interactive visualizations.
-
-#         Args:
-#             key: Either a scalar or list
-#                 that indexes the internal object for sub-plotting.
-#                 If an overall visualization is requested, pass None.
-
-#         Returns:
-#             A Plotly figure.
-#         """
-#         from ..visual.plot import (
-#             get_explanation_index,
-#             get_sort_indexes,
-#             mli_plot_horizontal_bar,
-#             mli_sort_take,
-#             plot_horizontal_bar,
-#             sort_take,
-#         )
-
-#         if isinstance(key, tuple) and len(key) == 2:
-#             provider, key = key
-#             if (
-#                 provider == "mli"
-#                 and "mli" in self.data(-1)
-#                 and self.explanation_type == "global"
-#             ):
-#                 explanation_list = self.data(-1)["mli"]
-#                 explanation_index = get_explanation_index(
-#                     explanation_list, "global_feature_importance"
-#                 )
-#                 scores = explanation_list[explanation_index]["value"]["scores"]
-#                 sort_indexes = get_sort_indexes(
-#                     scores, sort_fn=lambda x: -abs(x), top_n=15
-#                 )
-#                 sorted_scores = mli_sort_take(
-#                     scores, sort_indexes, reverse_results=True
-#                 )
-#                 sorted_names = mli_sort_take(
-#                     self.feature_names, sort_indexes, reverse_results=True
-#                 )
-#                 return mli_plot_horizontal_bar(
-#                     sorted_scores,
-#                     sorted_names,
-#                     title="Overall Importance:<br>Coefficients",
-#                 )
-#             # pragma: no cover
-#             msg = f"Visual provider {provider} not supported"
-#             raise RuntimeError(msg)
-#         data_dict = self.data(key)
-#         if data_dict is None:
-#             return None
-
-#         if self.explanation_type == "global" and key is None:
-#             data_dict = sort_take(
-#                 data_dict, sort_fn=lambda x: -abs(x), top_n=15, reverse_results=True
-#             )
-#             return plot_horizontal_bar(
-#                 data_dict, title="Overall Importance:<br>Coefficients"
-#             )
-
-#         return super().visualize(key)
 
 class TANExplanation(FeatureValueExplanation):
     """Visualizes specifically for EBM."""

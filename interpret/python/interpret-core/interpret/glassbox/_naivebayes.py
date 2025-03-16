@@ -272,7 +272,7 @@ class GaussianNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
         perf_dicts = gen_perf_dicts(predictions, y, is_classification, classes)
         for i, instance in enumerate(X):
             c0_cp, c1_cp = conditional_probabilities(model, instance)
-            scores = np.log(c0_cp / c1_cp)
+            scores = np.log(c1_cp / c0_cp)
             scores_list.append(scores)
             data_dict = {}
             data_dict["data_type"] = "univariate"
