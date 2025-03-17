@@ -1,3 +1,36 @@
+## 2025-03-11 and 2025-03-12
+
+### Summary of the Day
+- Total Hours Worked: 4
+- Main Objective: Create an empty virtual environment and import interpret-clone
+
+### Tasks Completed
+1. Add Linear Discriminant Analysis to the README.md
+2. Change division order between classes as discussed in the meeting
+3. Achieved to modify just a little bit of the NAM source code and now it everything can be executed with the same env (requirements.txt) 
+4. Divided setup.py requirements like the original setup.py
+5. Install our library with the new setup.py, create a venv and try to import it (not successful).
+
+### In-Progress
+- Develop setup.py
+- Integrate TAN
+- Explore BN model
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Investigate the dependencies of NAM
+- Start local explanations in TAN model
+- Explore global explanations in TAN model
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+- NAM dependencies
+
+---
+
 ## 2025-03-12
 
 ### Summary of the Day
@@ -6,7 +39,7 @@
 
 ### Tasks Completed
 1. Understand how EBMs interactions visualizations work
-1. Complete global explanation visualization (except some details to be fixed)
+2. Complete global explanation visualization (except some details to be fixed)
 
 ### In-Progress
 - Try to create a unique environment to execute NB, TAN and NAM notebooks with the same versions
