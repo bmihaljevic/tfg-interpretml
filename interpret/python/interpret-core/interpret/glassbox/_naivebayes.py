@@ -559,7 +559,7 @@ class CategoricalNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
         class_0_prior = model.class_count_[0] / model.class_count_.sum()
         class_1_prior = model.class_count_[1] / model.class_count_.sum()
         predictions = self.predict_proba(X)
-        intercept = np.log(class_0_prior / class_1_prior)
+        intercept = np.log(class_1_prior / class_0_prior)
 
         data_dicts = []
         scores_list = []
@@ -567,7 +567,7 @@ class CategoricalNB(BaseNaiveBayes, ClassifierMixin, ExplainerMixin):
         perf_dicts = gen_perf_dicts(predictions, y, is_classification, classes)
         for i, instance in enumerate(X):
             c0_cp, c1_cp = conditional_probabilities(model, instance)
-            scores = np.log(c0_cp / c1_cp)
+            scores = np.log(c1_cp / c0_cp)
             scores_list.append(scores)
             data_dict = {}
             data_dict["data_type"] = "univariate"

@@ -136,6 +136,11 @@ class BaseTAN:
             X_col = X[:, col_idx]
             unique_val_counts[col_idx] = len(np.unique(X_col))
 
+        self.priors_ = np.zeros(len(self.classes), dtype=np.float64)
+        for i, class_ in enumerate(self.classes):
+            self.priors_[i] = np.sum(y == class_)
+        self.priors_ /= len(y)
+
         self.global_selector_ = gen_global_selector(
             len(self.feature_names_in_),
             self.feature_names_in_,
@@ -214,27 +219,44 @@ class BaseTAN:
 
         model = self._model()
 
-        classes = None
-        is_classification = is_classifier(self)
-        intercept = model.intercept_
-        coef = model.coef_
-        if is_classification:
-            classes = self.classes_
-            predictions = self.predict_proba(X)
-            if len(classes) == 2:
-                predictions = predictions[:, 1]
-                intercept = intercept[0]
-                coef = coef[0]
-        else:
-            predictions = self.predict(X)
+        classes = np.array([0, 1], np.int64)
+        is_classification = is_classifier(model)
+
+        def conditional_probabilities(model, X):
+            cp_0 = np.zeros(X.shape[0])
+            cp_1 = np.zeros(X.shape[0])
+            for j in range(X.shape[0]):
+                feature = self.feature_names_in_[j]
+                cpt = model.bn.cpt(feature)
+                n_parents = len(self.parents[feature])
+                value = X[j]
+
+                if n_parents == 1:
+                    cp_0[j] = cpt[0, value]
+                    cp_1[j] = cpt[1, value]
+                
+                elif n_parents == 2:
+                    direct_parent = model.bn.parents(feature) - {model.bn.idFromName(self.target)}
+                    direct_parent_name = self.nameFromId[list(direct_parent)[0]]
+                    idx_parent = self.feature_names_in_.index(direct_parent_name)
+                    parent_value = X[idx_parent]
+                    cp_0[j] = cpt[0, parent_value, value]
+                    cp_1[j] = cpt[1, parent_value, value]
+
+            return cp_0, cp_1
+
+        intercept = np.log(self.priors_[1] / self.priors_[0])
+        predictions = model.predict_proba(X)
 
         data_dicts = []
         scores_list = []
         perf_list = []
         perf_dicts = gen_perf_dicts(predictions, y, is_classification, classes)
         for i, instance in enumerate(X):
-            scores = list(coef * instance)
+            cp_0, cp_1 = conditional_probabilities(model, instance)
+            scores = np.log(cp_1 / cp_0)
             scores_list.append(scores)
+
             data_dict = {}
             data_dict["data_type"] = "univariate"
 
@@ -391,7 +413,7 @@ class BaseTAN:
                     data_dict["meta"] = {"label_names": self.classes_.tolist()}
                 
             elif n_parents == 2:
-                self.feature_types_in_[index] = "interaction"
+                # self.feature_types_in_[index] = "interaction"
 
                 bin_labels_left = self.categorical_uniq_[index]
 
