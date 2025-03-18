@@ -7,7 +7,7 @@ setup(
     author="Javier Pérez Vargas",
     author_email="javipv2003pv@gmail.com",
     url="https://github.com/bmihaljevic/tfg-interpretml",
-    packages=["interpret"],
+    packages=find_packages(),
     install_requires=[
         "joblib==1.4.2",
         "numpy==1.26.4",

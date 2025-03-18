@@ -1,4 +1,34 @@
-## 2025-03-11 and 2025-03-12
+## 2025-03-18
+
+### Summary of the Day
+- Total Hours Worked: 1.5
+- Main Objective: Integrate TAN local explanations and more tests with setup.py
+
+### Tasks Completed
+1. Comprehend how to calculate the conditional probabilities from cpt in TAN
+2. Add `explain_local` function to the TAN class
+3. Try TAN in a notebook, with its global and local explanations
+4. More testing with setup.py 
+
+### In-Progress
+- Develop setup.py
+- Integrate TAN
+- Explore BN model
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Complete `setup.py`
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+- NAM dependencies
+
+---
+
+## 2025-03-16 and 2025-03-17
 
 ### Summary of the Day
 - Total Hours Worked: 4
