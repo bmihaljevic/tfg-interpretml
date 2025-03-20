@@ -1,5 +1,58 @@
 # Weekly Progress Meeting Minutes
 
+**Date:** 2025-03-19
+
+---
+
+## 1. Summary of Weekly Progress  
+
+- **Main Objectives:** Finish TAN explanations and create a unique environment 
+- **Key Accomplishments:**
+  - Complete TAN local explanation
+  - Try both global and local TAN explanations on a notebook
+  - Achieve to get a unique environment to execute every notebook (including NAM, TAN and sklearn without errors)
+  - Try to import our library with setup.py (not successful)
+- **Overall Status:** On Track  
+
+## 2. Task Summary  
+
+| Task                                   | Status     | Time Spent | Summary                                                                                  |  
+|----------------------------------------|------------|------------|------------------------------------------------------------------------------------------|  
+| Little modifications as discussed in the meeting | Completed | 0.5h | Modified some NB formulas and extend README.md |
+| Modify NAM source code and adapt it to newer versions | Completed | 2h | Spent some time looking for the errors and finally we got a unique environment to execute everything |
+| Modify setup.py | Completed | 1h | Added requirements (those of our environment) to the setup.py, dividing them as the original setup.py |
+| Try to install as a library | In progress | 2h | Tried different ways to do it, but couldn't |
+
+## 3. Challenges/Issues  
+
+- **Issue 1**: **Installation and Dependency Issues with pyAgrum**  
+  - **Impact**: pyAgrum required Graphviz and additional dependencies, which led to installation errors.  
+  - **Proposed Solution**: Investigate and resolve the installation issues, including resolving dependencies for pyAgrum.  
+
+- **Issue 2**: **Don't really know how the setup.py works**
+  - **Impact**: Lots of tries without knowing the meaning of some parameters (packages).
+  - **Proposed Solution**: Investigate how setup.py works and what implies installing a package with it.
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** 
+- **Goal 2:** 
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
+
+# Weekly Progress Meeting Minutes
+
 **Date:** 2025-03-12
 
 ---
