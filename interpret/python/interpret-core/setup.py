@@ -11,8 +11,7 @@ from setuptools.command.build import build
 from setuptools.command.install import install
 from setuptools.command.sdist import sdist
 
-# NOTE: Version is replaced by a regex script.
-version = "0.6.5"
+version = "0.1.0"
 
 
 def _copy_native_code_to_setup():
@@ -238,35 +237,39 @@ https://github.com/interpretml/interpret
         ],
     },
     install_requires=[
-        "numpy>=1.11.1",
-        "scipy>=0.18.1",
-        "pandas>=0.19.2",
-        "scikit-learn>=0.18.1",
-        "joblib>=0.11",
+        "joblib==1.4.2",
+        "numpy==1.26.4",
+        "pandas==2.2.3",
+        "pyAgrum==1.15.1",
+        "scikit_learn==1.3.2",
+        "scipy==1.13.1",
+        "torch==2.6.0",
+        "tqdm==4.66.2",
+        "loguru==0.7.3",
+        "tensorboard==2.19.0",
+        "matplotlib-inline==0.1.7",
+        "ipython==8.18.1"
     ],
     extras_require={
-        "debug": ["psutil>=5.6.2"],
-        "notebook": ["ipykernel>=4.10.0", "ipython>=5.5.0"],
+        "debug": ["psutil==6.1.1"],
+        "notebook": ["ipykernel==6.29.5", "ipython==8.18.1"],
         # Plotly (required if .visualize is ever called)
-        "plotly": ["plotly>=3.8.1"],
+        "plotly": ["plotly==5.24.1"],
         # Explainers
-        "lime": ["lime>=0.1.1.33"],
-        "sensitivity": ["SALib>=1.3.3"],
-        "shap": ["shap>=0.28.5", "dill>=0.2.5"],
+        "lime": ["lime==0.2.0.1"],
+        "sensitivity": ["SALib==1.5.1"],
+        "shap": ["shap==0.46.0", "dill>=0.2.5"],
         "linear": [],
         "skoperules": ["skope-rules>=1.0.1"],
-        "treeinterpreter": ["treeinterpreter>=0.2.2"],
-        "aplr": ["aplr>=10.6.1"],
+        "treeinterpreter": ["treeinterpreter==0.2.3"],
+        "aplr": ["aplr==10.8.0"],
         # Dash
         "dash": [
             # dash 2.* removed the dependencies on: dash-html-components, dash-core-components, dash-table
-            "dash>=1.0.0",
-            "dash-core-components>=1.0.0",  # dash 2.* removes the need for this dependency
-            "dash-html-components>=1.0.0",  # dash 2.* removes the need for this dependency
-            "dash-table>=4.1.0",  # dash 2.* removes the need for this dependency
-            "dash-cytoscape>=0.1.1",
-            "gevent>=1.3.6",
-            "requests>=2.19.0",
+            "dash==2.18.2",
+            "dash-cytoscape==1.0.2",
+            "gevent==24.11.1",
+            "requests==2.32.3",
         ],
         # Testing
         "testing": [
@@ -279,7 +282,7 @@ https://github.com/interpretml/interpret
             "pytest-cov>=2.6.1",
             "ruff>=0.1.2",
             "jupyter>=1.0.0",
-            "ipywidgets>=7.4.2",
+            "ipywidgets==8.1.5",
         ],
     },
 )

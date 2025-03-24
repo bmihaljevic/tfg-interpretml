@@ -1,3 +1,31 @@
+## 2025-03-22 and ## 2025-03-23 and ## 2025-03-24
+
+### Summary of the Day
+- Total Hours Worked: 4.5
+- Main Objective: Advance with the TFG Memory and install our library as a package
+
+### Tasks Completed
+1. Add LDA and QDA to the TFG Memory
+2. Extend Naive Bayes and TAN in TFG Memory
+3. Start "Desarrollo" section in TFG Memory
+4. Install our library as a package. Finally the easiest way was to modify the original setup.py in the /interpret-core/ folder
+
+### In-Progress
+- Explore BN model
+- Move notebooks to docs
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Move notebooks to docs
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
 ## 2025-03-18
 
 ### Summary of the Day
