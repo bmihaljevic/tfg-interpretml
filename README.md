@@ -18,7 +18,7 @@ This extension aims to expand InterpretML by integrating probabilistic models wh
 
 InterpretML uses two main ways to explain these type of models:
 
-- **Global Explanations**: These explanations provide insights into how a model makes predictions across the **entire dataset**. Example: How the score 
+- **Global Explanations**: These explanations provide insights into how a model makes predictions across the **entire dataset**.
 
 <p align="center">
   <img width="700" align="center" alt="Image" src="https://github.com/user-attachments/assets/8891b574-9e1d-488c-afee-4caef393f98a" />
