@@ -1,3 +1,31 @@
+## 2025-03-25
+
+### Summary of the Day
+- Total Hours Worked: 1.5
+- Main Objective: Moving notebooks to interpret/docs
+
+### Tasks Completed
+1. Use a first version of the library, which install every necessary dependency
+2. Move and reorganize Naive Bayes notebook to interpret/docs
+3. Move and reorganize TAN notebook to interpret/docs
+
+### In-Progress
+- Explore BN model
+- Move notebooks to docs
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Move the rest of the notebooks to docs
+- Modify setup and folder names so we can import the library with other name (different than interpret)
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
 ## 2025-03-22 and ## 2025-03-23 and ## 2025-03-24
 
 ### Summary of the Day

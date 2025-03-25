@@ -10,3 +10,8 @@ from ._ebm._ebm import (
 from ._ebm._merge_ebms import merge_ebms  # noqa: F401
 from ._linear import LinearRegression, LogisticRegression  # noqa: F401
 from ._skoperules import DecisionListClassifier  # noqa: F401
+
+from .nam.wrapper import NAMClassifier, NAMRegressor
+from ._lineardiscriminantanalysis import LinearDiscriminantAnalysisClassifier
+from ._naivebayes import GaussianNB, CategoricalNB
+from ._tan import TANClassifier
