@@ -1,3 +1,29 @@
+## 2025-03-26
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Moving the rest of the notebooks to interpret/docs and work on TFG Memory
+
+### Tasks Completed
+1. Move and reorganize LDA notebook to interpret/docs
+2. Move and reorganize NAM notebook to interpret/docs
+3. Write in the TFG Memory about Naive Bayes 
+
+### In-Progress
+- Explore BN model
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Modify setup and folder names so we can import the library with other name (different than interpret)
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
 ## 2025-03-25
 
 ### Summary of the Day

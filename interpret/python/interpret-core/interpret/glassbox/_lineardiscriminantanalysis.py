@@ -186,10 +186,6 @@ class BaseLinearDiscriminantAnalysis:
         perf_dicts = gen_perf_dicts(predictions, y, is_classification, classes)
         for i, instance in enumerate(X):
             scores = (instance * model.coef_)[0]
-            print("Instance:", instance)
-            print("Intercept:", intercept)
-            print("Scores:", scores)
-            print()
             scores_list.append(scores)
             data_dict = {}
             data_dict["data_type"] = "univariate"
