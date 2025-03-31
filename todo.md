@@ -1,6 +1,3 @@
 - General importances of the features (global explanation summary)
 - Code setup.py
-- Unify environments and avoid NAM import problems.
 - Complete README.md
-- Add notebooks to /docs
-- Integrate TAN model

@@ -1,5 +1,59 @@
 # Weekly Progress Meeting Minutes
 
+**Date:** 2025-03-31
+
+---
+
+## 1. Summary of Weekly Progress  
+
+- **Main Objectives:** Work on TFG Memory, install repo as a package, redo and move notebooks
+- **Key Accomplishments:**
+  - Continue working on "Marco Teórico" section of the TFG
+  - Start "Desarrollo" section
+  - Install the repo as a package modifying the original setup.py
+  - Redo, organize and move notebooks to docs/
+- **Overall Status:** On Track  
+
+## 2. Task Summary  
+
+| Task                                     | Status      | Time Spent | Summary                                                                 |
+|------------------------------------------|------------|------------|-------------------------------------------------------------------------|
+| Continue working on "Marco Teórico" section of TFG | In progress | 3.5h | Worked on finalizing the theoretical framework section, adding LDA and QDA. |
+| Start "Desarrollo" section of TFG | In Progress | 3h | Began drafting and structuring the development section. |
+| Install repo as a package (setup.py) | Completed | 2.5h | I struggled but finally the best option is to modify the original setup.py. |
+| Redo, organize, test and move notebooks to docs/ | Completed | 1.5h | Reorganized Jupyter notebooks and moved them to the documentation package folder. |
+| Investigate about the use of splines in GAMs | In progress | 1h | Read documentation and some implementations. |
+
+## 3. Challenges/Issues  
+
+- **Issue 1**: **Installation and Dependency Issues with pyAgrum**  
+  - **Impact**: pyAgrum required Graphviz and additional dependencies, which led to installation errors.  
+  - **Proposed Solution**: Investigate and resolve the installation issues, including resolving dependencies for pyAgrum.  
+
+- **Issue 2**: **Don't really know how the setup.py works**
+  - **Impact**: Lots of tries without knowing the meaning of some parameters (packages).
+  - **Proposed Solution**: Investigate how setup.py works and what implies installing a package with it.
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** 
+- **Goal 2:** 
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
+
+# Weekly Progress Meeting Minutes
+
 **Date:** 2025-03-19
 
 ---
