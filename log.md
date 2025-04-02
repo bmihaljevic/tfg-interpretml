@@ -1,3 +1,30 @@
+## 2025-04-02
+
+### Summary of the Day
+- Total Hours Worked: 1.5
+- Main Objective: Read and investigate about benchmark tabular data
+
+### Tasks Completed
+1. Read this paper: https://arxiv.org/pdf/2305.02997
+2. Comprehend its conclusiones, learning interesting insights and discovering new models
+3. Investigate some of the 196 datasets used in it, which could be useful for our study 
+
+### In-Progress
+- Investigate for the comparison section
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Keep reading and investigating
+- Modify setup and folder names so we can import the library with other name (different than interpret)
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
 ## 2025-03-31
 
 ### Summary of the Day
