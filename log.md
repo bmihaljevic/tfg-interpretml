@@ -1,3 +1,30 @@
+## 2025-04-08
+
+### Summary of the Day
+- Total Hours Worked: 1.5
+- Main Objective: Read about benchmark tabular data and work on TFG Memory
+
+### Tasks Completed
+1. Continue the TFG Memory adding other interpretable models and black-box models
+2. Investigate how to download the datasets used in the papers
+3. Think about how to organize the models comparison section 
+
+### In-Progress
+- Investigate for the comparison section
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Keep reading and investigating
+- Modify setup and folder names so we can import the library with other name (different than interpret)
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
 ## 2025-04-05 and 2025-04-06 
 
 ### Summary of the Day

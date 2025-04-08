@@ -1,5 +1,48 @@
 # Weekly Progress Meeting Minutes
 
+**Date:** 2025-04-08
+
+---
+
+## 1. Summary of Weekly Progress  
+
+- **Main Objectives:** Work on TFG Memory, read and investigate on models comparison
+- **Key Accomplishments:**
+  - Add new models on TFG Memory 
+  - Continue "Desarrollo" section on TFG Memory
+  - Read papers about models comparison
+- **Overall Status:** On Track  
+
+## 2. Task Summary  
+
+| Task                                     | Status      | Time Spent | Summary                                                                 |
+|------------------------------------------|------------|------------|-------------------------------------------------------------------------|
+| Continue working on "Marco Teórico" section of TFG | In progress | 2h | Add decision trees and also non-interpretable models |
+| Continue "Desarrollo" section of TFG | In Progress | 2.5h | Add explanations for some models as LDA |
+| Read papers about models comparison | Completed | 2.5h | Learn about benchmarks, how to compare models and access datasets |
+
+## 3. Challenges/Issues  
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** 
+- **Goal 2:** 
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
+
+# Weekly Progress Meeting Minutes
+
 **Date:** 2025-03-31
 
 ---
