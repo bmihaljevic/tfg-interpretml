@@ -6,7 +6,24 @@ As it Github page says:
 
 ## Installation
 
-TODO
+The easiest way to install this extension of **InterpretML** is by following these steps:
+
+1. Create a new conda environment:
+```
+conda create --name {env_name} python=3.9
+```
+
+2. Activate the environment:
+```
+conda activate {env_name}
+```
+
+3. Navigate to the root directory and install:
+```
+pip install ./interpret/python/interpret-core
+```
+
+While you can choose not to use conda, it is recommended to avoid potential conflicts with dependencies.
 
 ## Objective of this Extension
 

@@ -1,3 +1,4 @@
 venv/
 interpret_clone.*/
 build/
+.conda/

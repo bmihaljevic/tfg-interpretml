@@ -248,7 +248,14 @@ https://github.com/interpretml/interpret
         "loguru==0.7.3",
         "tensorboard==2.19.0",
         "matplotlib-inline==0.1.7",
-        "ipython==8.18.1"
+        "ipython==8.18.1",
+        "requests==2.32.3",
+        "Flask==2.2.2",
+        "Werkzeug==2.2.2",
+        "gevent==24.11.1",
+        "dash==2.18.2",
+        "dash-cytoscape==1.0.2",
+        "gevent==24.11.1",
     ],
     extras_require={
         "debug": ["psutil==6.1.1"],
@@ -263,14 +270,6 @@ https://github.com/interpretml/interpret
         "skoperules": ["skope-rules>=1.0.1"],
         "treeinterpreter": ["treeinterpreter==0.2.3"],
         "aplr": ["aplr==10.8.0"],
-        # Dash
-        "dash": [
-            # dash 2.* removed the dependencies on: dash-html-components, dash-core-components, dash-table
-            "dash==2.18.2",
-            "dash-cytoscape==1.0.2",
-            "gevent==24.11.1",
-            "requests==2.32.3",
-        ],
         # Testing
         "testing": [
             "scikit-learn>=1.0.0",
