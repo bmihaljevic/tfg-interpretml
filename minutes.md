@@ -1,5 +1,48 @@
 # Weekly Progress Meeting Minutes
 
+**Date:** 2025-04-16
+
+---
+
+## 1. Summary of Weekly Progress  
+
+- **Main Objectives:** Work on TFG Memory, read papers and start trying some benchmarks
+- **Key Accomplishments:** 
+  - Continue "Desarrollo" section on TFG Memory adding some cites
+  - Investigate Tabzilla (https://github.com/naszilla/tabzilla) benchmark and try it
+- **Overall Status:** On Track  
+
+## 2. Task Summary  
+
+| Task                                     | Status      | Time Spent | Summary                                                                 |
+|------------------------------------------|------------|------------|-------------------------------------------------------------------------|
+| Continue working on "Desarrollo" section of TFG | In progress | 2.5h | Explain decision trees and other models, add cites and reorganise some sections |
+| Prepare the "Memoria de Seguimiento" | Completed | 1.5h | Review the previous work and explain how was the progress till now |
+| Investigate benchmarks and decide which I will use | Completed | 2h | Tabzilla was an attractive benchmark and it seemed easy to use |
+| Add EBM model to Tabzilla and use it | Completed | 2h | Achieve to add the model and test it with some datasets |
+
+## 3. Challenges/Issues  
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** 
+- **Goal 2:** 
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
+
+# Weekly Progress Meeting Minutes
+
 **Date:** 2025-04-08
 
 ---
