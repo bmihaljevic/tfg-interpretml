@@ -1,5 +1,51 @@
 # Weekly Progress Meeting Minutes
 
+**Date:** 2025-04-22
+
+---
+
+## 1. Summary of Weekly Progress  
+
+- **Main Objectives:** Start trying Tabzilla benchmark
+- **Key Accomplishments:** 
+  - Take a look to this paper: https://arxiv.org/abs/2409.14429
+  - Fork Tabzilla, make some changes and try the benchmark
+- **Overall Status:** On Track  
+
+## 2. Task Summary  
+
+| Task                                     | Status      | Time Spent | Summary                                                                 |
+|------------------------------------------|------------|------------|-------------------------------------------------------------------------|
+| Take a look to the paper https://arxiv.org/abs/2409.14429 | In progress | 45m | Investigate on which datasets EBM was the best model |
+| Fork Tabzilla repo and investigate it | Completed | 1h | See how the files are distributed and how to make an execution |
+| Download and filter datasets | Completed | 1.5h | Download every Tabzilla dataset and filter them (we only want binary) |
+| Add EBM Model | Completed | 1h | Complete models file and create EBM class, adding its parameters |
+| Try models and datasets | In progress | 1.5h | Select some models and some datasets, try them and investigate the results |
+
+## 3. Challenges/Issues  
+- **Issue 2**: **How to introduce Tabzilla in the TFG Memory**  
+  - **Impact**: Don't know how to start "Desarrollo" section.  
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** 
+- **Goal 2:** 
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
+
+# Weekly Progress Meeting Minutes
+
 **Date:** 2025-04-16
 
 ---
