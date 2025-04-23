@@ -1,3 +1,82 @@
+## 2025-04-22
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Investigate datasets and try different models
+
+### Tasks Completed
+1. Filter datasets (we are only interested on binary ones) and select some of them
+2. Choose different models and execute them on datasets
+3. Investigate how the results are saved
+
+### In-Progress
+- Investigate for the comparison section
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Keep reading and investigating
+- Modify setup and folder names so we can import the library with other name (different than interpret)
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
+## 2025-04-16
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Investigate Tabzilla benchmark and fork repo
+
+### Tasks Completed
+1. Investigate how Tabzilla works. Download datasets, change some files, adapt it to our project
+2. Add EBMModel and some methods
+
+### In-Progress
+- Investigate for the comparison section
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Keep reading and investigating
+- Modify setup and folder names so we can import the library with other name (different than interpret)
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
+## 2025-04-14 and 2025-04-15
+
+### Summary of the Day
+- Total Hours Worked: 2.5
+- Main Objective: Work on TFG Memory and "Memoria de Seguimiento"
+
+### Tasks Completed
+1. Continue working on "Desarrollo" section of TFG
+2. Prepare the "Memoria de Seguimiento"
+
+### In-Progress
+- Investigate for the comparison section
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Keep reading and investigating
+- Modify setup and folder names so we can import the library with other name (different than interpret)
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
 ## 2025-04-08
 
 ### Summary of the Day
