@@ -1,5 +1,47 @@
 # Weekly Progress Meeting Minutes
 
+
+**Date:** 2025-04-29
+
+---
+
+## 1. Summary of Weekly Progress  
+
+- **Main Objectives:** Continue TFG Memory
+- **Key Accomplishments:** 
+  - Almost finish Models Interpretability section of the memory
+  - Start and organize Models Comparative section of the memory
+- **Overall Status:** On Track  
+
+## 2. Task Summary  
+
+| Task                                     | Status      | Time Spent | Summary                                                                 |
+|------------------------------------------|------------|------------|-------------------------------------------------------------------------|
+| Write about GAM Models | In progress | 1.5 | Re-read about NAM and EBM so I can explain them in the memory |
+| Write about TabZilla | 1.5 | Investigate this benchmark and explain some of its features in the memory |
+
+## 3. Challenges/Issues  
+- **Issue 2**: **How to introduce Tabzilla in the TFG Memory**  
+  - **Impact**: Don't know how if the Models Comparative section is well organized.
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** 
+- **Goal 2:** 
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
+
 **Date:** 2025-04-22
 
 ---
