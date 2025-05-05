@@ -1,3 +1,29 @@
+## 2025-05-05
+
+### Summary of the Day
+- Total Hours Worked: 2.5
+- Main Objective: Investigate about metafeatures and continue TFG Memory
+
+### Tasks Completed
+1. Read some papers about metafeatures affecting GAM models
+2. Continue "Datasets" section in the TFG Memory
+
+### In-Progress
+- Investigate for the comparison section
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Keep reading and investigating
+- Modify setup and folder names so we can import the library with other name (different than interpret)
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
 ## 2025-04-27
 
 ### Summary of the Day
