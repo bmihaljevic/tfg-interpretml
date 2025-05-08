@@ -1,3 +1,56 @@
+## 2025-05-08
+
+### Summary of the Day
+- Total Hours Worked: 1.5
+- Main Objective: Upload a first version of the project in PyPI (https://pypi.org/project/interpret-clone/0.1.0/)
+
+### Tasks Completed
+1. Investigate how to upload the project in PyPI
+2. Install some libraries, create PyPI account
+3. Upload the project
+
+### In-Progress
+- Try to install the project directly from PyPI
+- Investigate for the comparison section
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Keep reading and investigating
+- Modify setup and folder names so we can import the library with other name (different than interpret)
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
+## 2025-05-06
+
+### Summary of the Day
+- Total Hours Worked: 1
+- Main Objective: Continue TFG Memory
+
+### Tasks Completed
+1. Continue "Datasets" section in the TFG Memory
+
+### In-Progress
+- Investigate for the comparison section
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Keep reading and investigating
+- Modify setup and folder names so we can import the library with other name (different than interpret)
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
 ## 2025-05-05
 
 ### Summary of the Day
