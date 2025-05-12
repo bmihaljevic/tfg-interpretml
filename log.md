@@ -1,4 +1,32 @@
-## 2025-05-10
+## 2025-05-12
+
+### Summary of the Day
+- Total Hours Worked: 2
+- Main Objective: Solve last day problems and check datasets
+
+### Tasks Completed
+1. Change setup.py location and some parameters
+2. Try downloading interpret-clone again (https://pypi.org/project/interpret-clone/0.1.2/) and tested it
+3. Check 'hard' datasets and see if I have them 
+
+### In-Progress
+- Investigate for the comparison section
+- Modify some setup.py parameters changing the name of the package and other fixes
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Keep reading and investigating
+- Modify setup and folder names so we can import the library with other name (different than interpret)
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
+## 2025-05-11
 
 ### Summary of the Day
 - Total Hours Worked: 1.5

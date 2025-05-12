@@ -1,0 +1,34 @@
+credit-g SÍ
+jungle-chess NO
+MiniBooNE SÍ
+albert NO
+electricity SÍ
+elevators SÍ
+Guillermo SÍ
+higgs SÍ
+nomao SÍ
+100-plants-texture NO
+poker-hand NO
+profb SÍ
+socmob SÍ
+vehicle NO
+Australian SÍ
+Bioresponse SÍ
+GesturePhase NO
+SpeedDating SÍ
+ada-agnostic SÍ
+airlines SÍ
+artificial-characters NO
+colic SÍ (HAY DOS)
+creddit-approval SÍ
+heart-h SÍ
+Jasmine SÍ
+kc1 SÍ
+lymph NO
+mfeat-fourier NO
+phoneme SÍ
+qsar-biodeg SÍ
+
+TOTAL: 
+- 21 SÍ
+- 9 NO (posiblemente clasificación multiclase)
