@@ -38,7 +38,7 @@ InterpretML uses two main ways to explain these type of models:
 - **Global Explanations**: These explanations provide insights into how a model makes predictions across the **entire dataset**.
 
 <p align="center">
-  <img width="700" align="center" alt="Image" src="https://github.com/user-attachments/assets/8891b574-9e1d-488c-afee-4caef393f98a" />
+  <img width="700" align="center" alt="Image" src="https://raw.githubusercontent.com/javipzv/raw-images/refs/heads/main/images/global_explanation.png" />
 </p>
 
 <br>
@@ -46,7 +46,7 @@ InterpretML uses two main ways to explain these type of models:
 - **Local Explanations**: These explanations focus on **individual predictions**, showing why the model made a specific decision for a given instance.
 
 <p align="center">
-  <img width="700" align="center" alt="Image" src="https://github.com/user-attachments/assets/51e6264e-83a4-4690-8ebf-c687d2ede98a" />
+  <img width="700" align="center" alt="Image" src="https://github.com/javipzv/raw-images/blob/main/images/local_explanation.png?raw=true" />
 </p>
 <br>
 
