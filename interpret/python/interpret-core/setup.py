@@ -1,13 +1,22 @@
 from setuptools import setup, find_packages
 
+with open('README.md') as f:
+    readme = f.read()
+
 setup(
-    name="interpret-clone",
-    version="0.1.2",
-    description="Un clon modificado de interpretml",
+    name="interpret-extension",
+    version="0.1.5",
+    description="This extension aims to expand InterpretML by \
+                 integrating probabilistic models while leveraging the existing \
+                 explanation mechanisms provided by the library. By doing so, we \
+                 enable users to analyze uncertainty, quantify probabilistic \
+                 predictions, and gain deeper insights into model behavior beyond point estimates.",
     author="Javier Pérez Vargas",
     author_email="javipv2003pv@gmail.com",
     url="https://github.com/bmihaljevic/tfg-interpretml",
     packages=find_packages(),
+    long_description=readme,
+    long_description_content_type='text/markdown',
     install_requires=[
         "joblib==1.4.2",
         "numpy==1.26.4",

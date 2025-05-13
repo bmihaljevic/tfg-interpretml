@@ -1,3 +1,31 @@
+## 2025-05-13
+
+### Summary of the Day
+- Total Hours Worked: 3
+- Main Objective: Continue TFG Memory and Publish the package again
+
+### Tasks Completed
+1. Modify TFG Memory as we discussed in the meeting
+2. Made some changes to our package, renaming references to 'interpret' and other minor changes
+3. Publish again the package in PyPI, renaming it to interpret-extension and detailing the page (https://pypi.org/project/interpret-extension/)
+4. Try it again, importing every new model to see if there was no errors
+
+### In-Progress
+- Comparison section
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Keep reading and investigating
+- Modify setup and folder names so we can import the library with other name (different than interpret)
+- Continue TFG Memory
+
+### Issues/Blockers
+- What type of features are assumed by each model?
+- There was some problems installing pyAgrum as it requires Graphviz and it needs some dependencies.
+- Impossibility of using our TAN model in a notebook without importing pyAgrum (Kernel Error ¿?) 
+
+---
+
 ## 2025-05-12
 
 ### Summary of the Day

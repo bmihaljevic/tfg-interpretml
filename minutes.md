@@ -1,7 +1,55 @@
 # Weekly Progress Meeting Minutes
 
 
-**Date:** 2025-04-29
+**Date:** 2025-05-13
+
+---
+
+## 1. Summary of Weekly Progress  
+
+- **Main Objectives:** Publish the package in PyPI and continue TFG Memory
+- **Key Accomplishments:** 
+  - Publish successfully the package (https://pypi.org/project/interpret-extension/)
+  - Create a new env, install it and instantiate every new model added
+  - Continue and modify TFG Memory as discussed in the meeting.
+  - Check 'hard' datasets
+- **Overall Status:** On Track  
+
+## 2. Task Summary  
+
+| Task                                     | Status      | Time Spent | Summary                                                                 |
+|------------------------------------------|------------|------------|-------------------------------------------------------------------------|
+| Rename and make some changes to interpret package | Completed | 1 | Had to change lots of references to 'interpret', also renamed other files and deleted some of them |
+| Publish the package | Completed | 2.5 | Achieved publishing the package under the name interpret-extension, faced some problems because it was my first time and made lots of retries |
+| Improve package page on PyPI | Completed | 1 | Investigate and add the README.md file, images, and descriptions to the page |
+| Continue TFG Memory | In progress | 2 | Write about the published package and modify the memory as discussed in the meeting |
+| Investigate on possible datasets | In progress | 1 | Check which were the 'hard' datasets and count how much of them I have in TabZilla repo |
+
+## 3. Challenges/Issues  
+- 
+
+### 4. Feedback & Discussion Points
+- [Any feedback from progress meeting]
+- [Discussion points raised during the meeting]
+
+### 5. Goals for Next Week
+- **Goal 1:** 
+- **Goal 2:** 
+
+### 6. Action Items
+| Action Item | Due Date |
+|-------------|----------|
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+| [Action Item Description] | [Date] |
+
+---
+---
+
+# Weekly Progress Meeting Minutes
+
+
+**Date:** 2025-05-07
 
 ---
 
