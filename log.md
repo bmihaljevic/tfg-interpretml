@@ -1,3 +1,25 @@
+## 2025-05-15
+
+### Summary of the Day
+- Total Hours Worked: 1.5
+- Main Objective: Develop script for running the experiment
+
+### Tasks Completed
+1. Write a script for automatizing the experiment results
+2. Modify TFG Memory as discussed in the meeting
+
+### In-Progress
+- Comparison section
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Include every algorithm in TabZilla
+- Continue TFG Memory
+
+### Issues/Blockers
+
+---
+
 ## 2025-05-13
 
 ### Summary of the Day
