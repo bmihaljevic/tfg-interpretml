@@ -1,3 +1,27 @@
+## 2025-05-18 and 2025-05-19 
+
+### Summary of the Day
+- Total Hours Worked: 5
+- Main Objective: Select 15 of the dataseta and start evaluating 9 models
+
+### Tasks Completed
+1. Select datasets with diverse characteristics
+2. Evaluate 9 models on them
+3. Add metafeatures table in the TFG Memory
+4. Finish 'datasets' subsection in the TFG Memory
+
+### In-Progress
+- Comparison section
+- TFG Memory
+
+### Next Steps for Tomorrow
+- Include every algorithm in TabZilla
+- Continue TFG Memory
+
+### Issues/Blockers
+- Problems executing TAN
+---
+
 ## 2025-05-15
 
 ### Summary of the Day

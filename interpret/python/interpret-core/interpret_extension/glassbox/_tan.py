@@ -4,10 +4,7 @@
 from abc import abstractmethod
 
 import numpy as np
-from sklearn.base import ClassifierMixin, RegressorMixin, is_classifier
-import pyAgrum as gum
-import pyAgrum.lib.notebook as gnb
-import pyAgrum.skbn as skbn
+from sklearn.base import ClassifierMixin, is_classifier
 from pyAgrum.skbn import BNClassifier
 from sklearn.utils.validation import check_is_fitted
 

@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name="interpret-extension",
-    version="0.1.5",
+    version="0.1.6",
     description="This extension aims to expand InterpretML by \
                  integrating probabilistic models while leveraging the existing \
                  explanation mechanisms provided by the library. By doing so, we \
